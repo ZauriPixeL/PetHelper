@@ -189,18 +189,18 @@
 
   <!-- iOS-Style Floating Notification Banner -->
   <div id="pushBanner" class="hidden absolute top-16 left-3 right-3 z-50 animate-slide-down">
-    <div class="glass-header rounded-2xl p-3.5 shadow-xl flex flex-col gap-2.5">
+    <div class="glass-header rounded-2xl p-3.5 shadow-xl flex flex-col gap-2.5 border border-indigo-100 dark:border-indigo-900">
       <div class="flex items-start justify-between gap-3">
         <div class="flex items-center gap-3">
           <div class="w-9 h-9 rounded-xl bg-slate-900 dark:bg-white text-indigo-400 dark:text-indigo-600 flex items-center justify-center shadow-md shrink-0 text-sm">
-            <i class="fa-solid fa-bell"></i>
+            <i class="fa-solid fa-bell animate-bounce"></i>
           </div>
           <div>
             <div class="font-bold text-slate-900 dark:text-white text-xs" id="pushBannerTitle">แจ้งเตือนเวลาจริงจาก PetHelper</div>
             <div id="pushBannerText" class="text-[11px] text-slate-600 dark:text-slate-300 mt-0.5 line-clamp-2">ได้เวลาดูแลสัตว์เลี้ยงของคุณแล้ว</div>
           </div>
         </div>
-        <button onclick="hidePushBanner()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"><i class="fa-solid fa-xmark text-xs"></i></button>
+        <button onclick="hidePushBanner()" class="text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
       
       <div id="pushBannerActions" class="hidden grid grid-cols-2 gap-2 mt-1 pt-2 border-t border-slate-100 dark:border-slate-700">
@@ -793,7 +793,19 @@
     let isSoundMuted = false;
     let audioContextUnlocked = false;
     let activeTriggeredAlarm = null;
-    let currentAlarmAudio = null;
+    
+    // 1. สร้าง Audio Object เอาไว้ล่วงหน้า และตั้งค่าวนลูป (Loop = true)
+    let currentAlarmAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+    currentAlarmAudio.loop = true;
+
+    // 2. ดักจับการแตะหน้าจอครั้งแรกของผู้ใช้เพื่อสั่ง load() แอบเตรียมเสียงเอาไว้
+    // (แก้ปัญหามือถือบล็อกการเล่นเสียงออโต้ หากยังไม่มีการสัมผัสจอ)
+    document.addEventListener('click', function() {
+      if (!audioContextUnlocked) {
+        currentAlarmAudio.load();
+        audioContextUnlocked = true;
+      }
+    }, { once: true });
 
     const speciesIcons = {
       dog: { label: 'สุนัข', icon: 'fa-dog' },
@@ -817,13 +829,20 @@
     function unlockAudioAndTest() {
       if (isSoundMuted) toggleSoundMute();
       try {
-        const testSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
-        testSound.play().then(() => {
+        currentAlarmAudio.currentTime = 0;
+        currentAlarmAudio.play().then(() => {
           audioContextUnlocked = true;
           showToast('🔊 ปลดล็อกระบบเสียงพร้อมใช้งานแล้ว');
+          
+          // ปิดเสียงทดสอบหลังจาก 1.5 วินาที
+          setTimeout(() => {
+            currentAlarmAudio.pause();
+            currentAlarmAudio.currentTime = 0;
+          }, 1500);
+
         }).catch(e => {
           audioContextUnlocked = true;
-          showToast('🔊 ระบบพร้อมทำงานแล้ว (กรุณาอนุญาตเสียงในเบราว์เซอร์)');
+          showToast('🔊 กรุณาอนุญาตให้ระบบเล่นเสียงในเบราว์เซอร์');
         });
       } catch (e) {
         audioContextUnlocked = true;
@@ -1304,15 +1323,10 @@
     }
 
     function fireRealTimeAlarm(pet, rem) {
-      if(!isSoundMuted && audioContextUnlocked) {
+      if(!isSoundMuted) {
         try {
-          if (currentAlarmAudio) {
-            currentAlarmAudio.pause();
-            currentAlarmAudio.currentTime = 0;
-          }
-          currentAlarmAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
-          currentAlarmAudio.loop = true; 
-          currentAlarmAudio.play();
+          currentAlarmAudio.currentTime = 0;
+          currentAlarmAudio.play().catch(e => console.warn('ระบบมือถือป้องกันการเล่นเสียงอัตโนมัติ (Autoplay prevented)', e));
         } catch(e) { }
       }
       activeTriggeredAlarm = { petId: pet.id, remId: rem.id };
@@ -1331,17 +1345,21 @@
       document.getElementById('pushBanner').classList.remove('hidden');
       renderDashboard();
     }
+    
+    // ปิดการแจ้งเตือน (พ่วงหยุดเสียง)
     function hidePushBanner() { 
       const pb = document.getElementById('pushBanner');
       if (pb) pb.classList.add('hidden'); 
       const am = document.getElementById('liveAlarmModal');
       if (am) am.classList.add('hidden');
-      if (currentAlarmAudio) {
+      
+      // สั่งหยุดเสียงเมื่อผู้ใช้กดปิดแจ้งเตือน
+      try {
         currentAlarmAudio.pause();
         currentAlarmAudio.currentTime = 0;
-        currentAlarmAudio = null;
-      }
+      } catch(e) {}
     }
+    
     function completeActiveAlarm() { const pet = pets.find(p=>p.id===activeTriggeredAlarm.petId); if(pet){ const r=pet.reminders.find(x=>x.id===activeTriggeredAlarm.remId); if(r) r.done=true; saveState(); renderDashboard(); } hidePushBanner(); }
     function snoozeActiveAlarm(min) { const pet = pets.find(p=>p.id===activeTriggeredAlarm.petId); if(pet){ const r=pet.reminders.find(x=>x.id===activeTriggeredAlarm.remId); if(r){ r.time=getFutureTimeString(min); r.notified=false; } saveState(); renderDashboard(); } hidePushBanner(); }
     
