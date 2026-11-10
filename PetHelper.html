@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="th" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PetHelper Enterprise v4 - ระบบดูแลสัตว์เลี้ยงอัจฉริยะ</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Kanit -->
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Kanit', 'sans-serif'],
+          },
+          colors: {
+            slate: {
+              850: '#1E293B',
+              900: '#0F172A',
+              950: '#020617',
+            },
+            primary: {
+              DEFAULT: '#4F46E5',
+              hover: '#4338CA',
+            }
+          },
+          boxShadow: {
+            'soft': '0 4px 20px -2px rgba(15, 23, 42, 0.05)',
+            'floating': '0 20px 30px -10px rgba(15, 23, 42, 0.12)',
+            'dark-floating': '0 20px 30px -10px rgba(0, 0, 0, 0.5)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: #F8FAFC;
+      color: #0F172A;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .dark body {
+      background-color: #020617;
+      color: #F8FAFC;
+    }
+
+    /* Glassmorphism Classes */
+    .glass-header {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .dark .glass-header {
+      background: rgba(15, 23, 42, 0.85);
+      border-bottom-color: rgba(51, 65, 85, 0.5);
+    }
+
+    .modern-card {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.03);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .dark .modern-card {
+      background: #0F172A;
+      border: 1px solid #1E293B;
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.2);
+    }
+
+    .modern-input {
+      border: 1px solid #CBD5E1;
+      border-radius: 10px;
+      padding: 10px 14px;
+      background: #FFFFFF;
+      font-size: 0.9rem;
+      outline: none;
+      transition: all 0.2s;
+      width: 100%;
+      color: #0F172A;
+    }
+    .dark .modern-input {
+      background: #1E293B;
+      border-color: #334155;
+      color: #F8FAFC;
+      color-scheme: dark;
+    }
+    .modern-input:focus {
+      border-color: #4F46E5;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+    }
+    .dark .modern-input:focus {
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
+    }
+
+    .btn-primary {
+      background-color: #4F46E5;
+      color: white;
+      border-radius: 10px;
+      font-weight: 500;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-primary:hover { background-color: #4338CA; transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(1px); }
+
+    .btn-secondary {
+      background-color: #F1F5F9;
+      color: #334155;
+      border: 1px solid #E2E8F0;
+      border-radius: 10px;
+      font-weight: 500;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .dark .btn-secondary {
+      background-color: #1E293B;
+      color: #CBD5E1;
+      border-color: #334155;
+    }
+    .btn-secondary:hover { background-color: #E2E8F0; color: #0F172A; }
+    .dark .btn-secondary:hover { background-color: #334155; color: #F8FAFC; }
+
+    .badge {
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-weight: 500;
+      font-size: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 999px; }
+    .dark ::-webkit-scrollbar-thumb { background: #475569; }
+    ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+
+    /* Map Animation */
+    @keyframes routeDash { to { stroke-dashoffset: -40; } }
+    .animated-route { animation: routeDash 1.2s linear infinite; }
+    @keyframes radarPulse { 0% { r: 6; opacity: 0.9; } 70% { r: 38; opacity: 0; } 100% { r: 38; opacity: 0; } }
+    .gps-pulse { animation: radarPulse 2s infinite ease-out; }
+    .map-pin-group { cursor: pointer; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .map-pin-group:hover { transform: scale(1.15); }
+
+    /* UI Animation */
+    @keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .animate-slide-down { animation: slideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    @keyframes fadeUp { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .animate-fade-up { animation: fadeUp 0.25s ease-out forwards; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between transition-colors duration-300">
+
+  <!-- ==================== TOP NAVIGATION HEADER ==================== -->
+  <header class="w-full glass-header sticky top-0 z-40 border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-indigo-600 dark:bg-indigo-500 text-white flex items-center justify-center shadow-md text-lg">
+          <i class="fa-solid fa-paw"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-lg md:text-xl tracking-tight leading-none text-slate-900 dark:text-white">PetHelper</span>
+            <span class="badge bg-indigo-50 text-indigo-700 border border-indigo-100 dark:bg-indigo-900/50 dark:text-indigo-300 dark:border-indigo-800 text-[10px]">v4 Enterprise</span>
+          </div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block font-normal">ระบบผู้ช่วยดูแลสัตว์เลี้ยง ครอบคลุมพื้นที่เกาะภูเก็ต</p>
+        </div>
+      </div>
+
+      <!-- Action Toolbar -->
+      <div class="flex flex-wrap items-center gap-2">
+        <!-- Audio Unlock Button (Important for reliable chimes) -->
+        <button onclick="unlockAudioAndTest()" class="btn-secondary px-3 py-1.5 text-xs text-emerald-600 dark:text-emerald-400">
+          <i class="fa-solid fa-volume-high"></i>
+          <span class="hidden md:inline">ทดสอบระบบเสียง</span>
+        </button>
+
+        <button onclick="toggleDarkMode()" class="btn-secondary px-3 py-1.5 text-xs text-amber-500 dark:text-amber-300" title="สลับโหมดมืด/สว่าง">
+          <i id="themeIcon" class="fa-solid fa-moon"></i>
+        </button>
+
+        <button onclick="toggleLayoutMode()" id="btnLayoutToggle" class="btn-secondary px-3 py-1.5 text-xs">
+          <i class="fa-solid fa-expand"></i>
+          <span id="layoutToggleText" class="hidden sm:inline">ขยายจอ</span>
+        </button>
+
+        <button onclick="openResetConfirmModal()" class="btn-secondary px-2.5 py-1.5 text-xs text-rose-500" title="คืนค่าเริ่มต้น">
+          <i class="fa-solid fa-rotate-left"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN WORKSPACE CONTAINER ==================== -->
+  <main id="mainWorkspace" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+    <!-- LEFT COLUMN: Enterprise Overview -->
+    <aside id="leftSidebar" class="hidden lg:flex lg:col-span-5 flex-col gap-6 sticky top-20">
+      
+      <div class="modern-card p-6 relative overflow-hidden">
+        <div class="flex items-center justify-between mb-4">
+          <span class="badge bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Enterprise Pet Care Solution</span>
+          <span class="text-xs font-semibold text-emerald-600 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> ระบบทำงานปกติ
+          </span>
+        </div>
+
+        <h1 class="text-2xl font-bold leading-snug mb-2 text-slate-900 dark:text-white">
+          PetHelper: ระบบผู้ช่วยดูแลสัตว์เลี้ยงครบวงจร
+        </h1>
+        <p class="text-sm text-slate-600 dark:text-slate-400 mb-5 leading-relaxed">
+          จัดตารางดูแล, สมุดวัคซีน, บัญชีค่าใช้จ่าย, วิเคราะห์ด้วย AI และค้นหาสถานพยาบาลครอบคลุมทุกอำเภอในจังหวัดภูเก็ต
+        </p>
+
+        <!-- Emergency Hotlines -->
+        <div class="bg-rose-50/70 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-900/50 rounded-2xl p-4 mb-5">
+          <div class="text-xs font-bold uppercase tracking-wider text-rose-700 dark:text-rose-400 mb-3 flex items-center gap-1.5">
+            <i class="fa-solid fa-truck-medical"></i> ศูนย์ฉุกเฉินสัตว์เลี้ยง 24 ชั่วโมง (ภูเก็ต)
+          </div>
+          <div class="space-y-2 text-sm font-medium">
+            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-3 py-2 rounded-xl border border-rose-100 dark:border-slate-700 shadow-sm">
+              <span class="text-slate-800 dark:text-slate-200 text-xs font-semibold">🚨 รพ.สัตว์ทองหล่อ (ถ.บายพาส)</span>
+              <a href="tel:076380000" class="font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/30 px-2.5 py-1 rounded-lg border border-rose-200 dark:border-rose-800 text-xs hover:bg-rose-100">076-380-000</a>
+            </div>
+            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-3 py-2 rounded-xl border border-rose-100 dark:border-slate-700 shadow-sm">
+              <span class="text-slate-800 dark:text-slate-200 text-xs font-semibold">🏥 รพ.สัตว์เจ้าฟ้า (ถ.เจ้าฟ้าตะวันตก)</span>
+              <a href="tel:076264567" class="font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-2.5 py-1 rounded-lg border border-indigo-200 dark:border-indigo-800 text-xs hover:bg-indigo-100">076-264-567</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Key Modules List -->
+        <div class="space-y-2.5 text-xs">
+          <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
+            <div class="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-400 flex items-center justify-center text-sm shrink-0">
+              <i class="fa-solid fa-clock"></i>
+            </div>
+            <div>
+              <strong class="text-slate-900 dark:text-white block font-semibold">Real-Time Clock & Countdown:</strong>
+              <span class="text-slate-600 dark:text-slate-400">ระบบนาฬิกาและแจ้งเตือนตามเวลาจริง พร้อมเสียงปลุก</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
+            <div class="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400 flex items-center justify-center text-sm shrink-0">
+              <i class="fa-solid fa-map-location-dot"></i>
+            </div>
+            <div>
+              <strong class="text-slate-900 dark:text-white block font-semibold">Phuket Vector Map (LBS):</strong>
+              <span class="text-slate-600 dark:text-slate-400">แผนที่เกาะภูเก็ตเต็มรูปแบบ พร้อมข้อมูล 15+ สถานพยาบาล</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- RIGHT COLUMN: Simulator & Main Viewport -->
+    <section id="appSimulatorCol" class="lg:col-span-7 flex justify-center w-full">
+      <div id="phoneFrameContainer" class="w-full max-w-[440px] bg-white dark:bg-slate-900 rounded-[2rem] shadow-floating dark:shadow-dark-floating border-[6px] border-slate-100 dark:border-slate-800 overflow-hidden flex flex-col h-[850px] max-h-[90vh] relative transition-all duration-300 ring-1 ring-slate-200/80 dark:ring-slate-700">
+
+        <!-- Phone Top Status Bar -->
+        <div class="bg-white dark:bg-slate-900 px-5 py-2.5 flex items-center justify-between text-xs font-medium shrink-0 z-20 border-b border-slate-100 dark:border-slate-800">
+          <div id="phoneClock" class="font-bold font-mono tracking-wide text-slate-900 dark:text-white w-16">00:00:00</div>
+          
+          <div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 text-[11px]">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>PetHelper Live</span>
+          </div>
+
+          <div class="flex items-center gap-2 text-slate-700 dark:text-slate-300 w-16 justify-end">
+            <button onclick="toggleSoundMute()" id="btnSoundStatus" class="hover:text-indigo-500" title="สลับเสียงแจ้งเตือน">
+              <i class="fa-solid fa-volume-high text-xs"></i>
+            </button>
+            <i class="fa-solid fa-battery-full text-xs text-emerald-500"></i>
+          </div>
+        </div>
+
+        <!-- iOS-Style Floating Notification Banner -->
+        <div id="pushBanner" class="hidden absolute top-12 left-3 right-3 z-50 animate-slide-down">
+          <div class="glass-header rounded-2xl p-3.5 shadow-xl flex flex-col gap-2.5">
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-slate-900 dark:bg-white text-indigo-400 dark:text-indigo-600 flex items-center justify-center shadow-md shrink-0 text-sm">
+                  <i class="fa-solid fa-bell"></i>
+                </div>
+                <div>
+                  <div class="font-bold text-slate-900 dark:text-white text-xs" id="pushBannerTitle">แจ้งเตือนเวลาจริงจาก PetHelper</div>
+                  <div id="pushBannerText" class="text-[11px] text-slate-600 dark:text-slate-300 mt-0.5 line-clamp-2">ได้เวลาดูแลสัตว์เลี้ยงของคุณแล้ว</div>
+                </div>
+              </div>
+              <button onclick="hidePushBanner()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"><i class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+            
+            <div id="pushBannerActions" class="hidden grid grid-cols-2 gap-2 mt-1 pt-2 border-t border-slate-100 dark:border-slate-700">
+              <button onclick="snoozeActiveAlarm(5)" class="btn-secondary py-1.5 text-xs">
+                <i class="fa-regular fa-clock"></i> เลื่อน 5 นาที
+              </button>
+              <button onclick="completeActiveAlarm()" class="btn-primary py-1.5 text-xs">
+                <i class="fa-solid fa-check"></i> ทำเสร็จแล้ว
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Persistent Pet Profile Header -->
+        <div class="bg-white dark:bg-slate-900 px-4 py-3 shrink-0 z-10 border-b border-slate-100 dark:border-slate-800">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+              <i class="fa-solid fa-paw text-indigo-600 dark:text-indigo-400"></i> สัตว์เลี้ยงของคุณ (<span id="petCountBadge">0</span>)
+            </span>
+            <button onclick="openPetFormModal('add')" class="btn-primary px-2.5 py-1 text-xs">
+              <i class="fa-solid fa-plus text-[10px]"></i> เพิ่มสัตว์เลี้ยง
+            </button>
+          </div>
+
+          <!-- Pet Selector Pills -->
+          <div id="petSelectorList" class="flex gap-2 overflow-x-auto pb-1">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Scrollable App Viewport -->
+        <div class="flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-950 relative" id="appViewport">
+          
+          <!-- Sticky Active Pet Summary -->
+          <div id="activePetSummary" class="sticky top-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md z-10 border-b border-slate-200/80 dark:border-slate-800 px-4 py-2.5 shadow-sm">
+            <!-- Populated by JS -->
+          </div>
+
+          <div class="p-4 space-y-4">
+
+            <!-- ==================== TAB 1: DASHBOARD ==================== -->
+            <div id="tab-dashboard" class="space-y-4 animate-fade-up">
+
+              <!-- Real-Time Alarm Control Center Banner -->
+              <div class="modern-card p-4 bg-slate-900 dark:bg-slate-800 text-white border-none relative overflow-hidden">
+                <div class="flex items-center justify-between gap-2 mb-3">
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                      <span class="text-[11px] font-semibold text-emerald-400 uppercase tracking-wider">Real-Time Clock Engine</span>
+                    </div>
+                    <div id="liveThaiDateText" class="text-xs text-slate-300 mt-0.5">กำลังโหลดวันที่...</div>
+                  </div>
+                  <div class="text-right">
+                    <div id="liveBigClock" class="text-2xl font-bold font-mono text-indigo-300 leading-none">00:00:00</div>
+                  </div>
+                </div>
+
+                <!-- Quick Preset Timers -->
+                <div class="bg-slate-800/80 dark:bg-slate-900/80 border border-slate-700/60 rounded-xl p-2.5">
+                  <div class="flex items-center justify-between text-[11px] mb-2 text-slate-300">
+                    <span class="font-medium"><i class="fa-solid fa-stopwatch text-indigo-400 mr-1"></i>ตั้งปลุกทดสอบระบบด่วน:</span>
+                  </div>
+                  <div class="grid grid-cols-3 gap-1.5">
+                    <button onclick="scheduleQuickTestAlarm(10)" class="bg-rose-600 hover:bg-rose-700 text-white py-1.5 px-2 rounded-lg text-[11px] font-medium transition-colors">
+                      +10 วินาที
+                    </button>
+                    <button onclick="scheduleQuickTestAlarm(60)" class="bg-indigo-600 hover:bg-indigo-700 text-white py-1.5 px-2 rounded-lg text-[11px] font-medium transition-colors">
+                      +1 นาที
+                    </button>
+                    <button onclick="scheduleQuickTestAlarm(300)" class="bg-emerald-600 hover:bg-emerald-700 text-white py-1.5 px-2 rounded-lg text-[11px] font-medium transition-colors">
+                      +5 นาที
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Daily Progress Card -->
+              <div class="modern-card p-4">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-bold text-slate-800 dark:text-slate-200">ความคืบหน้าการดูแลวันนี้</span>
+                  <span id="progressPercentText" class="badge bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">0% สำเร็จ</span>
+                </div>
+                <div class="w-full h-2.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden mb-3">
+                  <div id="progressBarFill" class="h-full bg-emerald-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                  <div class="bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl p-2 text-center">
+                    <div class="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase">รอดำเนินการ</div>
+                    <div id="statPending" class="text-lg font-bold text-slate-900 dark:text-white mt-0.5">0</div>
+                  </div>
+                  <div class="bg-emerald-50/50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/50 rounded-xl p-2 text-center">
+                    <div class="text-[10px] font-semibold text-emerald-700 dark:text-emerald-400 uppercase">เสร็จแล้ว</div>
+                    <div id="statDone" class="text-lg font-bold text-emerald-700 dark:text-emerald-400 mt-0.5">0</div>
+                  </div>
+                  <div class="bg-indigo-50/50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800/50 rounded-xl p-2 text-center">
+                    <div class="text-[10px] font-semibold text-indigo-700 dark:text-indigo-400 uppercase">สมุดวัคซีน</div>
+                    <div id="statVaccines" class="text-lg font-bold text-indigo-700 dark:text-indigo-400 mt-0.5">0</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- New Reminder Form -->
+              <div class="modern-card p-4">
+                <div class="flex items-center justify-between mb-3">
+                  <h3 class="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+                    <i class="fa-solid fa-calendar-plus text-indigo-600 dark:text-indigo-400"></i> สร้างรายการแจ้งเตือนใหม่
+                  </h3>
+                  <button type="button" onclick="setFormTimeToNextMinute(1)" class="text-[10px] font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
+                    + 1 นาทีข้างหน้า
+                  </button>
+                </div>
+                <form id="reminderForm" onsubmit="handleAddReminder(event)" class="space-y-2.5">
+                  <input type="text" id="remTitle" required placeholder="เช่น ให้อาหารมื้อเย็น, หยดยาเห็บหมัด..." class="modern-input text-xs py-2">
+                  <div class="grid grid-cols-3 gap-2">
+                    <select id="remCategory" class="modern-input text-xs py-1.5 px-1">
+                      <option value="food">อาหาร</option>
+                      <option value="med">ยา / เห็บหมัด</option>
+                      <option value="vaccine">วัคซีน</option>
+                      <option value="groom">อาบน้ำตัดขน</option>
+                    </select>
+                    <input type="date" id="remDate" required class="modern-input text-xs py-1.5 px-1">
+                    <input type="time" id="remTime" step="1" required class="modern-input text-xs py-1.5 px-1">
+                  </div>
+                  <button type="submit" class="btn-primary w-full py-2 text-xs">
+                    <i class="fa-solid fa-bell"></i> บันทึกและเปิดตั้งเวลาแจ้งเตือน
+                  </button>
+                </form>
+              </div>
+
+              <!-- Checklist Header & Filter -->
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="font-bold text-xs text-slate-900 dark:text-white">รายการนัดหมาย</h3>
+                  <button onclick="clearCompletedTasks()" class="text-[11px] text-rose-600 dark:text-rose-400 hover:underline font-medium">
+                    ล้างรายการที่เสร็จแล้ว
+                  </button>
+                </div>
+                <div class="flex gap-1.5 overflow-x-auto pb-1 mb-2 hide-scroll">
+                  <button onclick="setTaskFilter('all')" id="filterTask-all" class="badge bg-slate-900 text-white dark:bg-white dark:text-slate-900 cursor-pointer">ทั้งหมด</button>
+                  <button onclick="setTaskFilter('pending')" id="filterTask-pending" class="badge bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 cursor-pointer">รอดำเนินการ</button>
+                  <button onclick="setTaskFilter('food')" id="filterTask-food" class="badge bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 cursor-pointer">อาหาร</button>
+                  <button onclick="setTaskFilter('med')" id="filterTask-med" class="badge bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 cursor-pointer">ยา/เห็บหมัด</button>
+                </div>
+                <div id="reminderListContainer" class="space-y-2">
+                  <!-- Populated by JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- ==================== TAB 2: DIGITAL HEALTH BOOK ==================== -->
+            <div id="tab-health" class="hidden space-y-4 animate-fade-up">
+              
+              <div class="modern-card p-4 bg-slate-900 dark:bg-slate-800 text-white border-none">
+                <div class="flex items-start gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-slate-800 dark:bg-slate-900 text-indigo-400 border border-slate-700 flex items-center justify-center text-lg shrink-0">
+                    <i class="fa-solid fa-book-medical"></i>
+                  </div>
+                  <div>
+                    <h3 class="font-bold text-sm">สมุดสุขภาพ & วัคซีนดิจิทัล</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed mt-0.5">
+                      จัดเก็บประวัติการฉีดวัคซีนและสร้างตราประทับดิจิทัลเพื่อใช้แสดงต่อคลินิก
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <button onclick="toggleVaccineForm()" class="btn-secondary w-full py-2.5 text-xs border-dashed border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 font-semibold">
+                <i class="fa-solid fa-plus"></i> เพิ่มประวัติวัคซีน
+              </button>
+
+              <form id="vaccineForm" onsubmit="handleAddVaccine(event)" class="hidden modern-card p-4 space-y-2.5">
+                <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-2">
+                  <span class="font-bold text-xs text-slate-900 dark:text-white">บันทึกวัคซีนใหม่</span>
+                  <button type="button" onclick="toggleVaccineForm()" class="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div>
+                  <label class="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block mb-1">ชื่อวัคซีน / การรักษา</label>
+                  <input type="text" id="vacName" required placeholder="เช่น วัคซีนรวม 5 โรค" class="modern-input text-xs py-1.5">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block mb-1">วันที่ฉีด / นัด</label>
+                    <input type="date" id="vacDate" required class="modern-input text-xs py-1.5">
+                  </div>
+                  <div>
+                    <label class="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block mb-1">สถานะ</label>
+                    <select id="vacStatus" class="modern-input text-xs py-1.5">
+                      <option value="completed">ฉีดแล้ว</option>
+                      <option value="upcoming">นัดฉีดเข็มถัดไป</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block mb-1">สถานพยาบาล</label>
+                    <input type="text" id="vacClinic" placeholder="เช่น รพ.สัตว์ฉลอง" class="modern-input text-xs py-1.5">
+                  </div>
+                  <div>
+                    <label class="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block mb-1">เลข Lot ยา</label>
+                    <input type="text" id="vacLot" placeholder="เช่น PK-88421" class="modern-input text-xs py-1.5">
+                  </div>
+                </div>
+                <button type="submit" class="btn-primary w-full py-2 text-xs">บันทึกลงสมุดสุขภาพ</button>
+              </form>
+
+              <div id="vaccineListContainer" class="space-y-2.5">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+
+            <!-- ==================== TAB 3: EXPENSE TRACKER (NEW) ==================== -->
+            <div id="tab-expense" class="hidden space-y-4 animate-fade-up">
+              
+              <!-- Total Summary Card -->
+              <div class="modern-card p-4 bg-gradient-to-r from-indigo-600 to-indigo-800 text-white border-none shadow-md">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-xs font-medium text-indigo-200">บัญชีค่าใช้จ่ายรวม</span>
+                  <i class="fa-solid fa-wallet text-indigo-300"></i>
+                </div>
+                <div class="text-2xl font-bold mb-3 flex items-end gap-1">
+                  <span id="expenseTotalAmount">0</span> <span class="text-sm font-medium text-indigo-200 mb-1">บาท</span>
+                </div>
+                
+                <div class="grid grid-cols-4 gap-2 text-center text-[10px] font-medium border-t border-indigo-500/50 pt-3">
+                  <div>
+                    <div class="text-indigo-200 mb-0.5"><i class="fa-solid fa-utensils"></i> อาหาร</div>
+                    <div id="expSumFood" class="text-white">0</div>
+                  </div>
+                  <div>
+                    <div class="text-indigo-200 mb-0.5"><i class="fa-solid fa-stethoscope"></i> รักษา</div>
+                    <div id="expSumMed" class="text-white">0</div>
+                  </div>
+                  <div>
+                    <div class="text-indigo-200 mb-0.5"><i class="fa-solid fa-scissors"></i> อาบน้ำ</div>
+                    <div id="expSumGroom" class="text-white">0</div>
+                  </div>
+                  <div>
+                    <div class="text-indigo-200 mb-0.5"><i class="fa-solid fa-box"></i> อื่นๆ</div>
+                    <div id="expSumOther" class="text-white">0</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Add Expense Form -->
+              <div class="modern-card p-4 space-y-3">
+                <h3 class="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <i class="fa-solid fa-plus text-indigo-600 dark:text-indigo-400"></i> บันทึกค่าใช้จ่ายใหม่
+                </h3>
+                <form onsubmit="handleAddExpense(event)" class="space-y-2.5">
+                  <div>
+                    <input type="text" id="expTitle" required placeholder="รายการ เช่น อาหารเม็ด, ค่าวัคซีน..." class="modern-input text-xs py-1.5">
+                  </div>
+                  <div class="grid grid-cols-3 gap-2">
+                    <select id="expCategory" class="modern-input text-xs py-1.5 px-1 col-span-1">
+                      <option value="food">อาหาร</option>
+                      <option value="medical">รักษา/ยา</option>
+                      <option value="grooming">อาบน้ำตัดขน</option>
+                      <option value="toys">ของเล่น</option>
+                      <option value="other">อื่นๆ</option>
+                    </select>
+                    <input type="number" id="expAmount" required min="1" placeholder="จำนวนเงิน (บาท)" class="modern-input text-xs py-1.5 px-1 col-span-1">
+                    <input type="date" id="expDate" required class="modern-input text-xs py-1.5 px-1 col-span-1">
+                  </div>
+                  <button type="submit" class="btn-primary w-full py-1.5 text-xs">บันทึกรายจ่าย</button>
+                </form>
+              </div>
+
+              <!-- Expense List -->
+              <div id="expenseListContainer" class="space-y-2">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+
+            <!-- ==================== TAB 4: AI CARE PLANNER ==================== -->
+            <div id="tab-ai" class="hidden space-y-4 animate-fade-up">
+              
+              <div class="modern-card p-4 bg-slate-900 dark:bg-slate-800 text-white border-none relative overflow-hidden">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="badge bg-indigo-500/20 text-indigo-300 border border-indigo-400/30">AI Care Assistant</span>
+                  <span class="text-[10px] text-slate-400 font-mono">Gemini-Powered</span>
+                </div>
+                <h3 class="font-bold text-sm leading-tight">วิเคราะห์โภชนาการ & ตารางวัคซีนเฉพาะตัว</h3>
+                <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                  คำนวณพลังงานที่ต้องการต่อวัน (MER) และโปรแกรมวัคซีนตามสายพันธุ์และน้ำหนัก
+                </p>
+              </div>
+
+              <div class="modern-card p-4 space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-xs text-slate-900 dark:text-white">ข้อมูลสัตว์เลี้ยงที่จะวิเคราะห์</span>
+                  <button type="button" onclick="fillAIFromActivePet()" class="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
+                    <i class="fa-solid fa-arrows-rotate mr-1"></i>ดึงข้อมูล
+                  </button>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block mb-1">ประเภท</label>
+                    <input type="text" id="aiPetType" class="modern-input text-xs py-1.5">
+                  </div>
+                  <div>
+                    <label class="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block mb-1">สายพันธุ์</label>
+                    <input type="text" id="aiBreed" value="Golden Retriever" class="modern-input text-xs py-1.5">
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block mb-1">น้ำหนัก (กก.)</label>
+                    <input type="number" step="0.1" id="aiWeight" value="28" class="modern-input text-xs py-1.5">
+                  </div>
+                  <div>
+                    <label class="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block mb-1">สภาวะสุขภาพ</label>
+                    <select id="aiCondition" class="modern-input text-xs py-1.5">
+                      <option value="สุขภาพปกติ">สุขภาพปกติ</option>
+                      <option value="ทำหมันแล้ว/ควบคุมน้ำหนัก">ควบคุมน้ำหนัก</option>
+                      <option value="ลูกสัตว์วัยเด็ก">ลูกสัตว์วัยเด็ก</option>
+                    </select>
+                  </div>
+                </div>
+                <button id="btnGenerateAI" onclick="generateAICarePlan()" class="btn-primary w-full py-2 text-xs">
+                  <i class="fa-solid fa-wand-magic-sparkles"></i> ให้ AI วิเคราะห์โภชนาการ
+                </button>
+              </div>
+
+              <div id="aiResultContainer" class="space-y-3">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+
+            <!-- ==================== TAB 5: PHUKET VECTOR MAP (LBS) ==================== -->
+            <div id="tab-map" class="hidden space-y-3 animate-fade-up">
+              
+              <!-- Map Controls Header -->
+              <div class="modern-card p-3.5 space-y-3">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <h3 class="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+                    <i class="fa-solid fa-location-dot text-rose-500"></i> ค้นหาสถานพยาบาล (ภูเก็ต)
+                  </h3>
+                  <select id="gpsZoneSelect" onchange="changeGPSZone(this.value)" class="modern-input text-xs py-1 px-2 font-semibold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-900/40 border-indigo-100 dark:border-indigo-800 w-auto">
+                    <option value="all">📍 แสดงทั้งเกาะภูเก็ต</option>
+                    <option value="thalang">📍 โซนถลาง - เชิงทะเล</option>
+                    <option value="patong">📍 โซนกะทู้ - ป่าตอง</option>
+                    <option value="phuket_town">📍 โซนเมืองภูเก็ต</option>
+                    <option value="chalong">📍 โซนฉลอง - ราไวย์</option>
+                  </select>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 items-center bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700">
+                  <div>
+                    <div class="flex justify-between text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      <span>รัศมีค้นหา:</span>
+                      <span id="radiusValueLabel" class="text-indigo-600 dark:text-indigo-400 font-bold">15 กม.</span>
+                    </div>
+                    <input type="range" id="radiusSlider" min="2" max="40" step="1" value="15" oninput="updateMapRadius(this.value)" class="w-full accent-indigo-600 cursor-pointer">
+                  </div>
+                  <div class="relative">
+                    <input type="text" id="mapSearchInput" oninput="renderMapAndPlaces()" placeholder="ค้นหาชื่อคลินิก, 24 ชม..." class="modern-input text-xs py-1.5 pl-7 bg-white dark:bg-slate-900">
+                    <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-slate-400 text-xs"></i>
+                  </div>
+                </div>
+
+                <div class="flex gap-1.5 overflow-x-auto pb-1 hide-scroll">
+                  <button onclick="setMapCategory('all')" id="mapCat-all" class="badge bg-slate-900 text-white dark:bg-white dark:text-slate-900 cursor-pointer">ทั้งหมด</button>
+                  <button onclick="setMapCategory('emergency')" id="mapCat-emergency" class="badge bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 cursor-pointer">🚨 24 ชม.</button>
+                  <button onclick="setMapCategory('clinic')" id="mapCat-clinic" class="badge bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 cursor-pointer">🏥 คลินิก</button>
+                </div>
+              </div>
+
+              <!-- FULL PHUKET ISLAND VECTOR MAP ENGINE -->
+              <div class="modern-card overflow-hidden relative bg-[#E0F2FE] dark:bg-[#082F49] border-slate-200 dark:border-slate-700">
+                
+                <div class="absolute top-2.5 left-2.5 z-20">
+                  <div class="glass-header rounded-lg px-2.5 py-1 text-[10px] font-bold text-slate-800 dark:text-white shadow-sm flex items-center gap-1.5 border border-slate-200 dark:border-slate-600">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                    <span id="mapZoneTitle">Phuket Island Map</span>
+                  </div>
+                </div>
+
+                <div class="absolute top-2.5 right-2.5 z-20 flex flex-col gap-1">
+                  <button onclick="zoomVectorMap(0.25)" class="w-7 h-7 rounded-lg glass-header text-slate-800 dark:text-white font-bold border border-slate-200 dark:border-slate-600 text-xs shadow-sm flex items-center justify-center hover:bg-white/50">+</button>
+                  <button onclick="zoomVectorMap(-0.25)" class="w-7 h-7 rounded-lg glass-header text-slate-800 dark:text-white font-bold border border-slate-200 dark:border-slate-600 text-xs shadow-sm flex items-center justify-center hover:bg-white/50">−</button>
+                  <button onclick="resetVectorMap()" class="w-7 h-7 rounded-lg bg-indigo-600 text-white font-bold text-xs shadow-sm flex items-center justify-center hover:bg-indigo-700">
+                    <i class="fa-solid fa-crosshairs"></i>
+                  </button>
+                </div>
+
+                <!-- SVG Viewport (Larger area to cover whole island: 0 0 800 1200) -->
+                <div id="vectorMapContainer" class="w-full h-80 sm:h-96 overflow-hidden cursor-grab active:cursor-grabbing relative select-none"
+                     onmousedown="startMapDrag(event)" onmousemove="moveMapDrag(event)" onmouseup="endMapDrag()" onmouseleave="endMapDrag()"
+                     ontouchstart="startMapTouch(event)" ontouchmove="moveMapTouch(event)" ontouchend="endMapDrag()">
+                  <svg id="interactiveMapSVG" viewBox="0 0 800 1200" class="w-full h-full">
+                    <g id="mapPanZoomGroup" transform="translate(0,0) scale(1)">
+                      <!-- Ocean Background -->
+                      <rect x="-400" y="-400" width="1600" height="2000" fill="transparent" />
+
+                      <!-- Accurate Phuket Island Shape -->
+                      <g filter="drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.15))">
+                        <!-- Sarasin Bridge Connection -->
+                        <path d="M 380 0 L 420 0 L 420 45 L 380 45 Z" fill="#CBD5E1" stroke="#94A3B8" stroke-width="2"/>
+                        
+                        <!-- Main Island Body -->
+                        <path d="M 400 50 
+                                 C 380 150, 420 250, 450 300 
+                                 C 480 350, 520 400, 500 450 
+                                 C 480 500, 550 600, 600 650 
+                                 C 620 680, 580 750, 550 850 
+                                 C 520 950, 450 850, 400 950 
+                                 C 380 1000, 350 1050, 350 1050 
+                                 C 320 1000, 300 950, 300 950 
+                                 C 280 850, 290 800, 290 800 
+                                 C 270 700, 280 650, 280 650 
+                                 C 270 600, 280 550, 280 550 
+                                 C 290 450, 300 400, 300 400 
+                                 C 320 300, 350 200, 350 200 
+                                 C 380 150, 390 100, 400 50 Z" 
+                              fill="#F1F5F9" stroke="#94A3B8" stroke-width="4" stroke-linejoin="round" />
+                      </g>
+
+                      <!-- Greenery / Mountains (Khao Phra Thaeo & Nakkerd Hills) -->
+                      <path d="M 380 200 Q 450 250, 420 350 T 350 280 Z" fill="#DCFCE7" opacity="0.8"/>
+                      <path d="M 300 550 Q 380 600, 350 750 T 290 700 Z" fill="#DCFCE7" opacity="0.8"/>
+                      <path d="M 330 850 Q 400 880, 380 950 T 320 900 Z" fill="#DCFCE7" opacity="0.8"/>
+
+                      <!-- Highways (ถ.เทพกระษัตรี, ถ.บายพาส, ถ.เจ้าฟ้า) -->
+                      <g stroke-linecap="round" stroke-linejoin="round">
+                        <!-- Route 402 (Sarasin to Town) -->
+                        <path d="M 400 50 L 400 300 L 420 400 L 450 550 L 500 650" fill="none" stroke="#94A3B8" stroke-width="14"/>
+                        <path d="M 400 50 L 400 300 L 420 400 L 450 550 L 500 650" fill="none" stroke="#F8FAFC" stroke-width="8"/>
+                        
+                        <!-- Route 4024 Bypass (Ratsada to Chalong to Rawai) -->
+                        <path d="M 450 550 L 400 700 L 400 850 L 350 980" fill="none" stroke="#94A3B8" stroke-width="12"/>
+                        <path d="M 450 550 L 400 700 L 400 850 L 350 980" fill="none" stroke="#F8FAFC" stroke-width="6"/>
+
+                        <!-- Route 4020 (Wichit to Patong) -->
+                        <path d="M 450 600 L 350 600 L 280 650" fill="none" stroke="#94A3B8" stroke-width="10"/>
+                        <path d="M 450 600 L 350 600 L 280 650" fill="none" stroke="#F8FAFC" stroke-width="5"/>
+                        
+                        <!-- Route to Cherngtalay -->
+                        <path d="M 420 400 L 300 400" fill="none" stroke="#94A3B8" stroke-width="8"/>
+                        <path d="M 420 400 L 300 400" fill="none" stroke="#F8FAFC" stroke-width="4"/>
+                      </g>
+
+                      <!-- District Labels -->
+                      <text x="420" y="250" font-size="14" font-weight="bold" fill="#64748B" opacity="0.6">อ. ถลาง (Thalang)</text>
+                      <text x="360" y="580" font-size="14" font-weight="bold" fill="#64748B" opacity="0.6">อ. กะทู้ (Kathu)</text>
+                      <text x="450" y="750" font-size="14" font-weight="bold" fill="#64748B" opacity="0.6">อ. เมือง (Muang)</text>
+
+                      <!-- Map Center Reference Circle (Bypass Intersection Default) -->
+                      <circle id="svgRadarCircle" cx="450" cy="550" r="225" fill="#4F46E5" fill-opacity="0.08" stroke="#4F46E5" stroke-width="2" stroke-dasharray="8,6" />
+
+                      <g id="svgRouteLayer"></g>
+
+                      <!-- Current User GPS Position Pin -->
+                      <g id="userGpsMarker" transform="translate(450, 550)">
+                        <circle cx="0" cy="0" r="12" fill="#4F46E5" class="gps-pulse" />
+                        <circle cx="0" cy="0" r="8" fill="#4F46E5" stroke="#FFFFFF" stroke-width="3" />
+                        <rect x="-40" y="16" width="80" height="18" rx="6" fill="#0F172A" />
+                        <text x="0" y="29" text-anchor="middle" font-size="10" font-weight="bold" fill="#FFFFFF">ตำแหน่งของคุณ</text>
+                      </g>
+
+                      <!-- Pins Layer -->
+                      <g id="svgPinsLayer"></g>
+                    </g>
+                  </svg>
+                </div>
+
+                <div id="activeRouteBanner" class="bg-slate-900 text-white px-3.5 py-2.5 text-xs flex items-center justify-between gap-2">
+                  <div id="routeInfoText" class="truncate font-medium text-slate-300">
+                    🟢 แสดงสถานพยาบาลในรัศมี <span class="text-indigo-300 font-bold">15 กม.</span>
+                  </div>
+                  <button onclick="clearSelectedPlaceRoute()" id="btnClearRoute" class="hidden text-rose-400 font-bold hover:underline shrink-0">ปิดเส้นทาง ✕</button>
+                </div>
+              </div>
+
+              <div id="placesListContainer" class="space-y-2.5">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- BOTTOM NAVIGATION BAR (5 TABS) -->
+        <nav class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 px-2 py-2 grid grid-cols-5 gap-1 shrink-0">
+          <button onclick="switchTab('dashboard')" id="nav-dashboard" class="flex flex-col items-center justify-center py-1 text-indigo-600 dark:text-indigo-400 font-semibold">
+            <i class="fa-solid fa-calendar-check text-base"></i>
+            <span class="text-[9px] font-medium mt-0.5">ตารางดูแล</span>
+          </button>
+          <button onclick="switchTab('health')" id="nav-health" class="flex flex-col items-center justify-center py-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+            <i class="fa-solid fa-book-medical text-base"></i>
+            <span class="text-[9px] font-medium mt-0.5">สมุดวัคซีน</span>
+          </button>
+          <button onclick="switchTab('expense')" id="nav-expense" class="flex flex-col items-center justify-center py-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+            <i class="fa-solid fa-wallet text-base"></i>
+            <span class="text-[9px] font-medium mt-0.5">รายจ่าย</span>
+          </button>
+          <button onclick="switchTab('ai')" id="nav-ai" class="flex flex-col items-center justify-center py-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+            <i class="fa-solid fa-wand-magic-sparkles text-base"></i>
+            <span class="text-[9px] font-medium mt-0.5">AI วิเคราะห์</span>
+          </button>
+          <button onclick="switchTab('map')" id="nav-map" class="flex flex-col items-center justify-center py-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+            <i class="fa-solid fa-map-location-dot text-base"></i>
+            <span class="text-[9px] font-medium mt-0.5">แผนที่</span>
+          </button>
+        </nav>
+
+        <!-- ==================== MODALS (MOVED INSIDE PHONE FRAME) ==================== -->
+
+        <!-- Add / Edit Pet Profile Modal -->
+        <div id="petFormModal" class="hidden absolute inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div class="modern-card max-w-md w-full p-5 bg-white dark:bg-slate-900 relative">
+            <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-2.5 mb-4">
+              <h3 id="petFormModalTitle" class="text-sm font-bold text-slate-900 dark:text-white">เพิ่มโปรไฟล์สัตว์เลี้ยงใหม่</h3>
+              <button onclick="closePetFormModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="handleSavePetProfile(event)" class="space-y-3">
+              <input type="hidden" id="formPetMode" value="add">
+              <div class="grid grid-cols-3 gap-2">
+                <div class="col-span-2">
+                  <label class="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block mb-1">ชื่อสัตว์เลี้ยง *</label>
+                  <input type="text" id="formPetName" required placeholder="เช่น ถุงทอง" class="modern-input text-xs py-1.5">
+                </div>
+                <div>
+                  <label class="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block mb-1">ประเภท</label>
+                  <select id="formPetSpecies" class="modern-input text-xs py-1.5 px-1">
+                    <option value="dog">สุนัข</option>
+                    <option value="cat">แมว</option>
+                    <option value="rabbit">กระต่าย</option>
+                    <option value="bird">นก</option>
+                    <option value="reptile">สัตว์เลื้อยคลาน</option>
+                    <option value="rodent">หนู/สัตว์ฟันแทะ</option>
+                    <option value="fish">ปลา</option>
+                    <option value="exotic">Exotic</option>
+                  </select>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block mb-1">สายพันธุ์ *</label>
+                  <input type="text" id="formPetBreed" required class="modern-input text-xs py-1.5">
+                </div>
+                <div>
+                  <label class="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block mb-1">เพศ / ทำหมัน</label>
+                  <select id="formPetGender" class="modern-input text-xs py-1.5 px-1">
+                    <option value="ผู้ (ทำหมันแล้ว)">ผู้ (ทำหมันแล้ว)</option>
+                    <option value="ผู้ (ยังไม่ทำหมัน)">ผู้ (ยังไม่ทำหมัน)</option>
+                    <option value="เมีย (ทำหมันแล้ว)">เมีย (ทำหมันแล้ว)</option>
+                    <option value="เมีย (ยังไม่ทำหมัน)">เมีย (ยังไม่ทำหมัน)</option>
+                    <option value="ไม่ระบุ">ไม่ระบุ</option>
+                  </select>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block mb-1">อายุ *</label>
+                  <input type="text" id="formPetAge" required class="modern-input text-xs py-1.5">
+                </div>
+                <div>
+                  <label class="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block mb-1">น้ำหนัก (กก.)</label>
+                  <input type="number" step="0.01" id="formPetWeight" required class="modern-input text-xs py-1.5">
+                </div>
+              </div>
+              <div class="pt-2 flex gap-2">
+                <button type="button" onclick="closePetFormModal()" class="btn-secondary flex-1 py-2 text-xs">ยกเลิก</button>
+                <button type="submit" class="btn-primary flex-1 py-2 text-xs">บันทึกโปรไฟล์</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Delete Modal -->
+        <div id="deletePetModal" class="hidden absolute inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div class="modern-card max-w-sm w-full p-5 text-center space-y-3">
+            <div class="w-12 h-12 mx-auto rounded-full bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 flex items-center justify-center text-xl">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 class="text-sm font-bold text-slate-900 dark:text-white">ยืนยันการลบโปรไฟล์สัตว์เลี้ยง?</h3>
+            <div class="flex gap-2 pt-2">
+              <button onclick="closeDeletePetModal()" class="btn-secondary flex-1 py-2 text-xs">ยกเลิก</button>
+              <button onclick="confirmDeleteActivePet()" class="bg-rose-600 hover:bg-rose-700 text-white rounded-xl flex-1 py-2 text-xs font-semibold">ยืนยันลบ</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reset Modal -->
+        <div id="resetConfirmModal" class="hidden absolute inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div class="modern-card max-w-sm w-full p-5 text-center space-y-3">
+            <div class="w-12 h-12 mx-auto rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl">
+              <i class="fa-solid fa-rotate-left"></i>
+            </div>
+            <h3 class="text-sm font-bold text-slate-900 dark:text-white">รีเซ็ตข้อมูลระบบกลับเป็นค่าเริ่มต้น?</h3>
+            <div class="flex gap-2 pt-2">
+              <button onclick="closeResetConfirmModal()" class="btn-secondary flex-1 py-2 text-xs">ยกเลิก</button>
+              <button onclick="resetToDefaultData()" class="btn-primary flex-1 py-2 text-xs">ยืนยันรีเซ็ต</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Alarm Modal (In-App popup) -->
+        <div id="liveAlarmModal" class="hidden absolute inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div class="modern-card max-w-sm w-full p-6 text-center space-y-4 animate-slide-down border-2 border-rose-500">
+            <div class="w-16 h-16 mx-auto rounded-full bg-rose-100 dark:bg-rose-900/50 text-rose-600 dark:text-rose-400 flex items-center justify-center text-3xl animate-bounce">
+              <i class="fa-solid fa-bell"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white" id="alarmModalTitle">ถึงเวลานัดหมาย!</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-300 font-medium bg-slate-50 dark:bg-slate-800 p-2 rounded-lg" id="alarmModalDesc">รายละเอียด</p>
+            <div class="grid grid-cols-2 gap-2 pt-2">
+              <button onclick="snoozeActiveAlarm(5)" class="btn-secondary py-2 text-xs font-semibold">เลื่อน 5 นาที</button>
+              <button onclick="completeActiveAlarm()" class="btn-primary py-2 text-xs font-semibold">ทำเสร็จแล้ว</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Photo Lightbox -->
+        <div id="photoLightbox" class="hidden absolute inset-0 z-50 bg-slate-900/90 flex items-center justify-center p-4">
+          <div class="modern-card max-w-lg w-full p-4 text-center">
+            <div class="flex justify-between items-center mb-3">
+              <h3 class="font-bold text-sm text-slate-900 dark:text-white">รูปถ่าย</h3>
+              <button onclick="document.getElementById('photoLightbox').classList.add('hidden')" class="text-slate-400 hover:text-rose-500"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="bg-slate-100 dark:bg-slate-800 rounded-lg p-2 flex justify-center min-h-[200px] items-center">
+              <span class="text-xs text-slate-500"><i class="fa-solid fa-image text-4xl mb-2 block"></i> รูปภาพวัคซีน</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Toast Box -->
+        <div id="toastBox" class="hidden absolute bottom-16 left-1/2 -translate-x-1/2 z-50 glass-header px-4 py-2.5 rounded-full shadow-lg flex items-center gap-2 animate-fade-up whitespace-nowrap">
+          <i class="fa-solid fa-circle-check text-emerald-500 text-sm"></i>
+          <span id="toastMessage" class="text-xs font-semibold text-slate-900 dark:text-white">บันทึกข้อมูลเรียบร้อย</span>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // =========================================================================
+    // 1. STATE MANAGEMENT, DARK MODE & AUDIO
+    // =========================================================================
+    const STORAGE_KEY = 'pethelper_phuket_enterprise_v5';
+    let isSoundMuted = false;
+    let audioContextUnlocked = false;
+    let activeTriggeredAlarm = null;
+    let currentAlarmAudio = null;
+
+    const speciesIcons = {
+      dog: { label: 'สุนัข', icon: 'fa-dog' },
+      cat: { label: 'แมว', icon: 'fa-cat' },
+      rabbit: { label: 'กระต่าย', icon: 'fa-paw' },
+      bird: { label: 'นก', icon: 'fa-crow' },
+      reptile: { label: 'สัตว์เลื้อยคลาน', icon: 'fa-dragon' },
+      rodent: { label: 'หนู', icon: 'fa-mouse' },
+      fish: { label: 'ปลา', icon: 'fa-fish' },
+      exotic: { label: 'Exotic', icon: 'fa-leaf' }
+    };
+
+    function toggleDarkMode() {
+      const htmlClasses = document.documentElement.classList;
+      htmlClasses.toggle('dark');
+      const isDark = htmlClasses.contains('dark');
+      localStorage.setItem('pethelper_theme', isDark ? 'dark' : 'light');
+      document.getElementById('themeIcon').className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    }
+
+    function unlockAudioAndTest() {
+      if (isSoundMuted) toggleSoundMute();
+      try {
+        // ใช้ไฟล์เสียง MP3 สำหรับทดสอบ
+        const testSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+        testSound.play().then(() => {
+          audioContextUnlocked = true;
+          showToast('🔊 ปลดล็อกระบบเสียงพร้อมใช้งานแล้ว');
+        }).catch(e => {
+          audioContextUnlocked = true;
+          showToast('🔊 ระบบพร้อมทำงานแล้ว (กรุณาอนุญาตเสียงในเบราว์เซอร์)');
+        });
+      } catch (e) {
+        audioContextUnlocked = true;
+        showToast('🔊 ระบบจำลองเสียงพร้อมทำงานแล้ว');
+      }
+    }
+
+    function getDefaultPets() {
+      const today = getTodayDateString();
+      return [
+        {
+          id: 'pet-1', name: 'ถุงทอง', species: 'dog', speciesLabel: 'สุนัข', breed: 'Golden Retriever', gender: 'ผู้ (ทำหมันแล้ว)', age: '2 ปี', weight: 28.0, allergy: 'ไม่มีประวัติแพ้ยา', iconClass: 'fa-dog',
+          reminders: [{ id: 'r-1', title: 'ให้อาหารเม็ด 350 กรัม', category: 'food', date: today, time: '08:00', done: true, notified: true }],
+          vaccines: [],
+          expenses: [{ id: 'e-1', title: 'ค่าอาหารเม็ด Royal Canin', category: 'food', amount: 1850, date: today }]
+        },
+        {
+          id: 'pet-2', name: 'คุกกี้', species: 'rabbit', speciesLabel: 'กระต่าย', breed: 'Holland Lop', gender: 'เมีย (ทำหมันแล้ว)', age: '1 ปี', weight: 1.5, allergy: 'แพ้ฝุ่น', iconClass: 'fa-paw',
+          reminders: [{ id: 'r-2', title: 'ให้หญ้าทิโมธี', category: 'food', date: today, time: '12:00', done: false, notified: false }],
+          vaccines: [],
+          expenses: [{ id: 'e-2', title: 'หญ้าอัลฟัลฟ่า', category: 'food', amount: 350, date: today }]
+        }
+      ];
+    }
+
+    let pets = [];
+    let activePetId = null;
+    let currentTab = 'dashboard';
+    let taskFilter = 'all';
+    let isFullWidthLayout = false;
+
+    function getTodayDateString() {
+      const now = new Date();
+      return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+    }
+    function getFutureTimeString(min, sec=0) {
+      const t = new Date(Date.now() + min*60000 + sec*1000);
+      return `${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}:${String(t.getSeconds()).padStart(2,'0')}`;
+    }
+
+    function loadState() {
+      const theme = localStorage.getItem('pethelper_theme');
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+        document.getElementById('themeIcon').className = 'fa-solid fa-sun';
+      }
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed.pets && parsed.pets.length) {
+            pets = parsed.pets;
+            activePetId = parsed.activePetId || pets[0].id;
+            return;
+          }
+        }
+      } catch (e) {}
+      pets = getDefaultPets();
+      activePetId = pets[0].id;
+    }
+    function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify({ pets, activePetId })); }
+    function getActivePet() { return pets.find(p => p.id === activePetId) || pets[0]; }
+
+    // =========================================================================
+    // 2. UI RENDERING (HEADER, NAV, DASHBOARD)
+    // =========================================================================
+    function renderPetHeader() {
+      const selector = document.getElementById('petSelectorList');
+      const summary = document.getElementById('activePetSummary');
+      document.getElementById('petCountBadge').textContent = pets.length;
+
+      if (!pets.length) {
+        selector.innerHTML = ''; summary.innerHTML = '<div class="text-center py-2 text-xs text-slate-500">ไม่มีสัตว์เลี้ยง</div>';
+        return;
+      }
+
+      const activePet = getActivePet();
+      selector.innerHTML = pets.map(p => {
+        const isSel = p.id === activePet.id;
+        return `
+          <button onclick="selectPet('${p.id}')" class="px-3 py-1.5 rounded-xl border text-xs font-medium flex items-center gap-2 transition-all ${isSel ? 'bg-slate-900 text-white border-slate-900 dark:bg-indigo-600 dark:border-indigo-600' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'}">
+            <i class="fa-solid ${p.iconClass} ${isSel ? (document.documentElement.classList.contains('dark')?'text-white':'text-indigo-400') : 'text-slate-500 dark:text-slate-400'}"></i>
+            <span>${p.name}</span>
+          </button>
+        `;
+      }).join('');
+
+      summary.innerHTML = `
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/50 border border-indigo-100 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-lg shrink-0"><i class="fa-solid ${activePet.iconClass}"></i></div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="font-bold text-sm text-slate-900 dark:text-white leading-none">${activePet.name}</h3>
+                <span class="badge bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-[10px]">${activePet.breed}</span>
+              </div>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">${activePet.speciesLabel} • ${activePet.age} • ${activePet.weight} กก.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-1">
+            <button onclick="openDeletePetModal()" class="w-7 h-7 rounded-lg bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 flex items-center justify-center text-xs"><i class="fa-solid fa-trash-can"></i></button>
+          </div>
+        </div>
+      `;
+    }
+    function selectPet(id) { activePetId = id; saveState(); renderAll(); }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      ['dashboard', 'health', 'expense', 'ai', 'map'].forEach(t => {
+        document.getElementById('tab-' + t).classList.toggle('hidden', t !== tab);
+        const nav = document.getElementById('nav-' + t);
+        if (t === tab) nav.className = 'flex flex-col items-center justify-center py-1 text-indigo-600 dark:text-indigo-400 font-semibold';
+        else nav.className = 'flex flex-col items-center justify-center py-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300';
+      });
+      if (tab === 'map') renderMapAndPlaces();
+    }
+
+    function renderDashboard() {
+      const pet = getActivePet();
+      const listEl = document.getElementById('reminderListContainer');
+      if (!pet) return;
+
+      const total = pet.reminders.length;
+      const done = pet.reminders.filter(r => r.done).length;
+      const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+      document.getElementById('statPending').textContent = total - done;
+      document.getElementById('statDone').textContent = done;
+      document.getElementById('statVaccines').textContent = pet.vaccines.length;
+      document.getElementById('progressPercentText').textContent = `${pct}% สำเร็จ`;
+      document.getElementById('progressBarFill').style.width = `${pct}%`;
+
+      let filtered = pet.reminders;
+      if (taskFilter === 'pending') filtered = pet.reminders.filter(r => !r.done);
+      else if (['food', 'med'].includes(taskFilter)) filtered = pet.reminders.filter(r => r.category === taskFilter);
+
+      if (!filtered.length) {
+        listEl.innerHTML = `<div class="modern-card p-5 text-center text-xs text-slate-500 dark:text-slate-400"><i class="fa-solid fa-circle-check text-emerald-500 text-xl mb-1 block"></i>ไม่มีรายการในหมวดนี้</div>`;
+        return;
+      }
+
+      listEl.innerHTML = filtered.map(item => {
+        const isDone = item.done;
+        return `
+          <div class="modern-card p-3 flex items-center justify-between gap-2.5 ${isDone ? 'bg-slate-50/80 dark:bg-slate-800/50 opacity-70' : ''}">
+            <div class="flex items-center gap-3 flex-1">
+              <button onclick="toggleReminderDone('${item.id}')" class="w-6 h-6 rounded-lg border flex items-center justify-center shrink-0 text-xs ${isDone ? 'bg-emerald-600 border-emerald-600 text-white' : 'bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-600'}">
+                ${isDone ? '<i class="fa-solid fa-check"></i>' : ''}
+              </button>
+              <div class="flex-1">
+                <div class="flex items-center gap-1.5 mb-1">
+                  <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400"><i class="fa-regular fa-clock mr-0.5"></i>${item.time} น.</span>
+                  <span id="countdown-badge-${item.id}" class="badge text-[10px] py-0 px-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">...</span>
+                </div>
+                <div class="text-xs font-semibold ${isDone ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-900 dark:text-white'}">${item.title}</div>
+              </div>
+            </div>
+            <button onclick="deleteReminder('${item.id}')" class="text-slate-400 hover:text-rose-500 p-1 text-xs"><i class="fa-solid fa-trash-can"></i></button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // =========================================================================
+    // 3. EXPENSE TRACKER (NEW FEATURE)
+    // =========================================================================
+    function renderExpenses() {
+      const pet = getActivePet();
+      const listEl = document.getElementById('expenseListContainer');
+      if (!pet || !pet.expenses) { pet.expenses = []; }
+      
+      let sumFood=0, sumMed=0, sumGroom=0, sumOther=0;
+      pet.expenses.forEach(e => {
+        const amt = parseFloat(e.amount) || 0;
+        if (e.category === 'food') sumFood += amt;
+        else if (e.category === 'medical') sumMed += amt;
+        else if (e.category === 'grooming') sumGroom += amt;
+        else sumOther += amt;
+      });
+      const total = sumFood + sumMed + sumGroom + sumOther;
+
+      document.getElementById('expenseTotalAmount').textContent = total.toLocaleString();
+      document.getElementById('expSumFood').textContent = sumFood.toLocaleString();
+      document.getElementById('expSumMed').textContent = sumMed.toLocaleString();
+      document.getElementById('expSumGroom').textContent = sumGroom.toLocaleString();
+      document.getElementById('expSumOther').textContent = sumOther.toLocaleString();
+
+      if (!pet.expenses.length) {
+        listEl.innerHTML = `<div class="modern-card p-4 text-center text-xs text-slate-500">ยังไม่มีรายการค่าใช้จ่าย</div>`;
+        return;
+      }
+
+      const catMeta = {
+        food: { icon: 'fa-utensils', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-900/30' },
+        medical: { icon: 'fa-stethoscope', color: 'text-rose-600 dark:text-rose-400', bg: 'bg-rose-50 dark:bg-rose-900/30' },
+        grooming: { icon: 'fa-scissors', color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/30' },
+        toys: { icon: 'fa-baseball', color: 'text-indigo-600 dark:text-indigo-400', bg: 'bg-indigo-50 dark:bg-indigo-900/30' },
+        other: { icon: 'fa-box', color: 'text-slate-600 dark:text-slate-400', bg: 'bg-slate-100 dark:bg-slate-800' }
+      };
+
+      listEl.innerHTML = pet.expenses.sort((a,b)=>new Date(b.date)-new Date(a.date)).map(e => {
+        const m = catMeta[e.category] || catMeta.other;
+        return `
+          <div class="modern-card p-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg ${m.bg} ${m.color} flex items-center justify-center text-sm shrink-0">
+                <i class="fa-solid ${m.icon}"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-xs text-slate-900 dark:text-white">${e.title}</h4>
+                <p class="text-[10px] text-slate-500 dark:text-slate-400">${e.date}</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <div class="font-bold text-sm text-slate-900 dark:text-white">${parseFloat(e.amount).toLocaleString()} ฿</div>
+              <button onclick="deleteExpense('${e.id}')" class="text-[10px] text-rose-500 hover:underline">ลบ</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function handleAddExpense(e) {
+      e.preventDefault();
+      const pet = getActivePet();
+      const title = document.getElementById('expTitle').value.trim();
+      const category = document.getElementById('expCategory').value;
+      const amount = document.getElementById('expAmount').value;
+      const date = document.getElementById('expDate').value;
+      if(!pet.expenses) pet.expenses = [];
+      pet.expenses.push({ id: 'e-'+Date.now(), title, category, amount, date });
+      document.getElementById('expTitle').value = '';
+      document.getElementById('expAmount').value = '';
+      saveState(); renderExpenses(); showToast('บันทึกค่าใช้จ่ายแล้ว');
+    }
+    function deleteExpense(id) {
+      const pet = getActivePet();
+      pet.expenses = pet.expenses.filter(e => e.id !== id);
+      saveState(); renderExpenses(); showToast('ลบรายการค่าใช้จ่ายแล้ว');
+    }
+
+    // =========================================================================
+    // 4. VECTOR MAP ENGINE (FULL PHUKET ISLAND 15+ PLACES)
+    // =========================================================================
+    const gpsZones = {
+      all: { cx: 450, cy: 550 },
+      thalang: { cx: 400, cy: 250 },
+      patong: { cx: 280, cy: 650 },
+      phuket_town: { cx: 500, cy: 650 },
+      chalong: { cx: 400, cy: 850 }
+    };
+    let currentGPSZone = 'all';
+    let mapRadiusKm = 15;
+    let mapCategory = 'all';
+    let selectedPlaceId = null;
+    let mapScale = 1, mapPanX = 0, mapPanY = 0, isDraggingMap = false, dragStartX = 0, dragStartY = 0;
+
+    const mapPlaces = [
+      // THALANG & CHERNGTALAY (North)
+      { id:'pl1', name:'โรงพยาบาลสัตว์ถลาง', category:'clinic', svgX:400, svgY:300, dist:12, phone:'076-311-222' },
+      { id:'pl2', name:'มูลนิธิเพื่อสุนัขในซอย (Mai Khao)', category:'emergency', svgX:390, svgY:100, dist:24, phone:'076-681-000' },
+      { id:'pl3', name:'คลินิกรักษ์สัตว์เชิงทะเล', category:'clinic', svgX:300, svgY:400, dist:14, phone:'076-123-456' },
+      { id:'pl4', name:'บางเทาเพ็ทแคร์', category:'clinic', svgX:310, svgY:350, dist:15, phone:'076-444-555' },
+      
+      // KATHU & PATONG & KAMALA (West)
+      { id:'pl5', name:'โรงพยาบาลสัตว์กะทู้', category:'clinic', svgX:350, svgY:600, dist:6, phone:'076-321-456' },
+      { id:'pl6', name:'คลินิกสัตวแพทย์ป่าตอง', category:'emergency', svgX:280, svgY:650, dist:9, phone:'076-340-999' },
+      { id:'pl7', name:'กมลาเพ็ทฮอสพิทัล', category:'clinic', svgX:280, svgY:550, dist:11, phone:'076-777-888' },
+      
+      // PHUKET TOWN & BYPASS (Central)
+      { id:'pl8', name:'รพ.สัตว์ทองหล่อ (ถ.บายพาส)', category:'emergency', svgX:450, svgY:550, dist:2, phone:'076-380-000' },
+      { id:'pl9', name:'รพ.สัตว์เจ้าฟ้า (Town)', category:'clinic', svgX:480, svgY:620, dist:4, phone:'076-264-567' },
+      { id:'pl10', name:'ภูเก็ตแอนิมัลฮอสพิทัล (Town)', category:'clinic', svgX:500, svgY:650, dist:5, phone:'076-211-987' },
+      { id:'pl11', name:'เกาะสิเหร่เพ็ทแคร์', category:'clinic', svgX:600, svgY:650, dist:8, phone:'076-999-000' },
+      { id:'pl12', name:'ภูเก็ตอินเตอร์เพ็ท (บายพาส)', category:'clinic', svgX:430, svgY:500, dist:3, phone:'076-333-222' },
+      
+      // CHALONG, KATA, RAWAI (South)
+      { id:'pl13', name:'โรงพยาบาลสัตว์ฉลอง', category:'clinic', svgX:400, svgY:850, dist:10, phone:'076-381-111' },
+      { id:'pl14', name:'เจ้าฟ้าอันดามันสัตวแพทย์', category:'clinic', svgX:420, svgY:750, dist:8, phone:'076-555-666' },
+      { id:'pl15', name:'คลินิกรักษ์สัตว์ราไวย์', category:'clinic', svgX:350, svgY:980, dist:16, phone:'081-892-3344' },
+      { id:'pl16', name:'กะรนเวทคลินิก', category:'clinic', svgX:290, svgY:800, dist:13, phone:'076-222-111' }
+    ];
+
+    function changeGPSZone(zone) {
+      currentGPSZone = zone;
+      const z = gpsZones[zone];
+      const marker = document.getElementById('userGpsMarker');
+      const radar = document.getElementById('svgRadarCircle');
+      if(marker) marker.setAttribute('transform', `translate(${z.cx}, ${z.cy})`);
+      if(radar) { radar.setAttribute('cx', z.cx); radar.setAttribute('cy', z.cy); }
+      resetVectorMap();
+      renderMapAndPlaces();
+    }
+
+    function updateMapRadius(val) {
+      mapRadiusKm = parseInt(val, 10);
+      document.getElementById('radiusValueLabel').textContent = `${mapRadiusKm} กม.`;
+      const radar = document.getElementById('svgRadarCircle');
+      if(radar) radar.setAttribute('r', mapRadiusKm * 15);
+      renderMapAndPlaces();
+    }
+
+    function setMapCategory(c) {
+      mapCategory = c;
+      ['all','emergency','clinic'].forEach(x => {
+        const btn = document.getElementById('mapCat-'+x);
+        if(btn) btn.className = x===c ? 'badge bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'badge bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700';
+      });
+      renderMapAndPlaces();
+    }
+
+    function renderMapAndPlaces() {
+      const z = gpsZones[currentGPSZone];
+      const q = document.getElementById('mapSearchInput').value.trim().toLowerCase();
+      
+      // Calculate dynamic distance based on current GPS Zone center
+      const places = mapPlaces.map(p => {
+        const dx = p.svgX - z.cx; const dy = p.svgY - z.cy;
+        const dist = Math.sqrt(dx*dx + dy*dy) / 15; // 15 SVG units ~ 1 km
+        return { ...p, calcDist: parseFloat(dist.toFixed(1)) };
+      }).filter(p => {
+        return p.calcDist <= mapRadiusKm && 
+               (mapCategory === 'all' || p.category === mapCategory) &&
+               (!q || p.name.toLowerCase().includes(q));
+      }).sort((a,b) => a.calcDist - b.calcDist);
+
+      // SVG Pins
+      const pinsLayer = document.getElementById('svgPinsLayer');
+      if(pinsLayer) {
+        pinsLayer.innerHTML = places.map(p => {
+          const isSel = p.id === selectedPlaceId;
+          const bg = p.category === 'emergency' ? '#F43F5E' : '#10B981';
+          return `
+            <g class="map-pin-group" transform="translate(${p.svgX}, ${p.svgY})" onclick="selectPlaceOnMap('${p.id}')">
+              ${isSel ? `<circle cx="0" cy="0" r="28" fill="${bg}" opacity="0.3" stroke="#0F172A" stroke-width="2" stroke-dasharray="4,4"/>` : ''}
+              <circle cx="0" cy="0" r="16" fill="${bg}" stroke="#FFFFFF" stroke-width="3" />
+              <text x="0" y="5" text-anchor="middle" font-size="12">${p.category === 'emergency'?'🚨':'🏥'}</text>
+              <rect x="-45" y="-32" width="90" height="16" rx="4" fill="${isSel?'#0F172A':'#FFFFFF'}" stroke="#CBD5E1" stroke-width="1"/>
+              <text x="0" y="-21" text-anchor="middle" font-size="9" font-weight="bold" fill="${isSel?'#FFFFFF':'#0F172A'}">${p.name.substring(0,12)}...</text>
+            </g>
+          `;
+        }).join('');
+      }
+
+      // Route
+      const routeLayer = document.getElementById('svgRouteLayer');
+      const selPlace = places.find(p => p.id === selectedPlaceId);
+      const banner = document.getElementById('routeInfoText');
+      const btnClear = document.getElementById('btnClearRoute');
+
+      if(selPlace && routeLayer) {
+        routeLayer.innerHTML = `
+          <path d="M ${z.cx} ${z.cy} L ${selPlace.svgX} ${z.cy} L ${selPlace.svgX} ${selPlace.svgY}" fill="none" stroke="#0F172A" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M ${z.cx} ${z.cy} L ${selPlace.svgX} ${z.cy} L ${selPlace.svgX} ${selPlace.svgY}" fill="none" stroke="#4F46E5" stroke-width="4" stroke-dasharray="8,8" class="animated-route" />
+        `;
+        banner.innerHTML = `🚗 นำทาง: <strong class="text-indigo-300">${selPlace.name}</strong> (${selPlace.calcDist} กม.)`;
+        btnClear.classList.remove('hidden');
+      } else {
+        if(routeLayer) routeLayer.innerHTML = '';
+        banner.innerHTML = `🟢 พบสถานบริการ <strong>${places.length} แห่ง</strong> ในรัศมี ${mapRadiusKm} กม.`;
+        btnClear.classList.add('hidden');
+      }
+
+      // List
+      const listEl = document.getElementById('placesListContainer');
+      if(!listEl) return;
+      if(!places.length) {
+        listEl.innerHTML = `<div class="modern-card p-4 text-center text-xs text-slate-500">ไม่พบสถานที่ในรัศมี</div>`;
+        return;
+      }
+      listEl.innerHTML = places.map(p => `
+        <div class="modern-card p-3 space-y-2 ${p.id===selectedPlaceId?'ring-2 ring-indigo-600':''}">
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="badge ${p.category==='emergency'?'bg-rose-50 text-rose-700':'bg-indigo-50 text-indigo-700'} text-[9px] mb-1">
+                ${p.category==='emergency'?'🚨 24 ชม.':'🏥 คลินิก'}
+              </span>
+              <h4 class="font-bold text-xs text-slate-900 dark:text-white">${p.name}</h4>
+            </div>
+            <span class="text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">${p.calcDist} กม.</span>
+          </div>
+          <div class="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-800">
+            <button onclick="selectPlaceOnMap('${p.id}')" class="btn-secondary px-2 py-1 text-[10px]"><i class="fa-solid fa-route"></i> นำทาง</button>
+            <a href="tel:${p.phone}" class="btn-primary px-2 py-1 text-[10px]"><i class="fa-solid fa-phone"></i> โทร ${p.phone}</a>
+          </div>
+        </div>
+      `).join('');
+    }
+    function selectPlaceOnMap(id) { selectedPlaceId = id; renderMapAndPlaces(); }
+    function clearSelectedPlaceRoute() { selectedPlaceId = null; renderMapAndPlaces(); }
+
+    function applyMapTransform() { const g = document.getElementById('mapPanZoomGroup'); if(g) g.setAttribute('transform', `translate(${mapPanX}, ${mapPanY}) scale(${mapScale})`); }
+    function zoomVectorMap(d) { mapScale = Math.max(0.5, Math.min(3, +(mapScale+d).toFixed(2))); applyMapTransform(); }
+    function resetVectorMap() { mapScale = 1; mapPanX = 0; mapPanY = 0; applyMapTransform(); }
+    function startMapDrag(e) { if(!e.target.closest('.map-pin-group')) { isDraggingMap = true; dragStartX = (e.clientX||e.touches[0].clientX)-mapPanX; dragStartY = (e.clientY||e.touches[0].clientY)-mapPanY; } }
+    function moveMapDrag(e) { if(isDraggingMap) { mapPanX = (e.clientX||e.touches?.[0].clientX)-dragStartX; mapPanY = (e.clientY||e.touches?.[0].clientY)-dragStartY; applyMapTransform(); } }
+    function endMapDrag() { isDraggingMap = false; }
+    function startMapTouch(e) { if(e.touches.length===1) startMapDrag(e); }
+    function moveMapTouch(e) { if(e.touches.length===1) moveMapDrag(e); }
+
+    // =========================================================================
+    // 5. UTILS (MODALS, TASKS, NOTIFS)
+    // =========================================================================
+    function renderAll() { renderPetHeader(); renderDashboard(); renderHealthBook(); renderExpenses(); renderMapAndPlaces(); }
+
+    function openPetFormModal() { document.getElementById('petFormModal').classList.remove('hidden'); }
+    function closePetFormModal() { document.getElementById('petFormModal').classList.add('hidden'); }
+    function openDeletePetModal() { document.getElementById('deletePetModal').classList.remove('hidden'); }
+    function closeDeletePetModal() { document.getElementById('deletePetModal').classList.add('hidden'); }
+    function openResetConfirmModal() { document.getElementById('resetConfirmModal').classList.remove('hidden'); }
+    function closeResetConfirmModal() { document.getElementById('resetConfirmModal').classList.add('hidden'); }
+    function showToast(msg) {
+      const box = document.getElementById('toastBox');
+      document.getElementById('toastMessage').textContent = msg;
+      box.classList.remove('hidden');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => box.classList.add('hidden'), 2500);
+    }
+
+    function handleSavePetProfile(e) {
+      e.preventDefault();
+      const name = document.getElementById('formPetName').value.trim();
+      const species = document.getElementById('formPetSpecies').value;
+      const breed = document.getElementById('formPetBreed').value.trim();
+      const gender = document.getElementById('formPetGender').value;
+      const age = document.getElementById('formPetAge').value.trim();
+      const weight = document.getElementById('formPetWeight').value;
+      const meta = speciesIcons[species] || speciesIcons.dog;
+
+      pets.push({
+        id: 'pet-'+Date.now(), name, species, speciesLabel: meta.label, breed, gender, age, weight, allergy: 'ไม่ระบุ', iconClass: meta.icon,
+        reminders: [], vaccines: [], expenses: []
+      });
+      activePetId = pets[pets.length-1].id;
+      saveState(); closePetFormModal(); renderAll(); showToast('เพิ่มสัตว์เลี้ยงแล้ว');
+    }
+
+    function confirmDeleteActivePet() {
+      pets = pets.filter(p => p.id !== activePetId);
+      activePetId = pets.length ? pets[0].id : null;
+      saveState(); closeDeletePetModal(); renderAll(); showToast('ลบสัตว์เลี้ยงแล้ว');
+    }
+
+    function resetToDefaultData() {
+      localStorage.removeItem(STORAGE_KEY);
+      pets = getDefaultPets(); activePetId = pets[0].id;
+      closeResetConfirmModal(); renderAll(); showToast('รีเซ็ตข้อมูลเริ่มต้นแล้ว');
+    }
+
+    function scheduleQuickTestAlarm(sec) {
+      const pet = getActivePet(); if(!pet) return;
+      if(!audioContextUnlocked) unlockAudioAndTest();
+      const t = new Date(Date.now() + sec*1000);
+      pet.reminders.unshift({
+        id: 'r-live-'+Date.now(), title: `ทดสอบปลุกด่วน (+${sec} วิ)`, category: 'med',
+        date: `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`,
+        time: `${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}:${String(t.getSeconds()).padStart(2,'0')}`,
+        done: false, notified: false
+      });
+      saveState(); renderDashboard(); showToast(`ตั้งเตือนล่วงหน้า ${sec} วินาที`);
+    }
+
+    function setTaskFilter(f) {
+      taskFilter = f;
+      ['all','pending','food','med'].forEach(x => {
+        const btn = document.getElementById('filterTask-'+x);
+        if(btn) btn.className = x===f ? 'badge bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'badge bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700';
+      });
+      renderDashboard();
+    }
+
+    function toggleReminderDone(id) { const pet = getActivePet(); const r = pet.reminders.find(x=>x.id===id); if(r) { r.done = !r.done; saveState(); renderDashboard(); } }
+    function deleteReminder(id) { const pet = getActivePet(); pet.reminders = pet.reminders.filter(x=>x.id!==id); saveState(); renderDashboard(); }
+    function clearCompletedTasks() { const pet = getActivePet(); pet.reminders = pet.reminders.filter(x=>!x.done); saveState(); renderDashboard(); showToast('ล้างรายการที่เสร็จแล้ว'); }
+    function setFormTimeToNextMinute(min) { document.getElementById('remDate').value = getTodayDateString(); document.getElementById('remTime').value = getFutureTimeString(min); }
+    function handleAddReminder(e) {
+      e.preventDefault(); const pet = getActivePet();
+      pet.reminders.unshift({
+        id: 'r-'+Date.now(), title: document.getElementById('remTitle').value.trim(), category: document.getElementById('remCategory').value,
+        date: document.getElementById('remDate').value, time: document.getElementById('remTime').value, done: false, notified: false
+      });
+      document.getElementById('remTitle').value = ''; saveState(); renderDashboard(); showToast('เพิ่มนัดหมายแล้ว');
+    }
+
+    function formatLiveCountdown(rem) {
+      if(rem.done) return { text: 'เสร็จแล้ว', badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400' };
+      const parts = rem.time.split(':'); const dt = new Date(`${rem.date}T${(parts[0]||'00').padStart(2,'0')}:${(parts[1]||'00').padStart(2,'0')}:${(parts[2]||'00').padStart(2,'0')}`);
+      const targetMs = isNaN(dt.getTime()) ? null : dt.getTime();
+      if(!targetMs) return { text: 'รอดำเนินการ', badgeClass: 'bg-slate-100 text-slate-600 border-slate-200' };
+
+      const diff = Math.floor((targetMs - Date.now())/1000);
+      if(diff > 0) return diff <= 60 ? { text: `อีก ${diff} วิ`, badgeClass: 'bg-rose-50 text-rose-600 border-rose-200 animate-pulse font-bold' } : { text: `อีก ${Math.floor(diff/60)}m ${diff%60}s`, badgeClass: 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-400' };
+      else if(diff >= -60) return { text: 'ถึงเวลาแล้ว!', badgeClass: 'bg-rose-600 text-white font-bold animate-bounce' };
+      else return { text: 'เลยเวลาที่ตั้งไว้', badgeClass: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400' };
+    }
+
+    function fireRealTimeAlarm(pet, rem) {
+      if(!isSoundMuted && audioContextUnlocked) {
+        try {
+          // หยุดเสียงเดิมที่อาจเล่นค้างอยู่ก่อนเริ่มใหม่
+          if (currentAlarmAudio) {
+            currentAlarmAudio.pause();
+            currentAlarmAudio.currentTime = 0;
+          }
+          // เล่นไฟล์เสียงแจ้งเตือนเมื่อถึงเวลา
+          currentAlarmAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+          currentAlarmAudio.loop = true; // วนลูปเสียงจนกว่าจะกดปิด
+          currentAlarmAudio.play();
+        } catch(e) {
+          console.warn("ไม่สามารถเล่นเสียงได้: ", e);
+        }
+      }
+      activeTriggeredAlarm = { petId: pet.id, remId: rem.id };
+      
+      const modalTitle = document.getElementById('alarmModalTitle');
+      const modalDesc = document.getElementById('alarmModalDesc');
+      if (modalTitle) modalTitle.textContent = `ถึงเวลา: น้อง${pet.name}`;
+      if (modalDesc) modalDesc.textContent = `${rem.title} (${rem.time} น.)`;
+      
+      const alarmModal = document.getElementById('liveAlarmModal');
+      if (alarmModal) alarmModal.classList.remove('hidden');
+      
+      document.getElementById('pushBannerTitle').textContent = `แจ้งเตือน: ${pet.name} (${rem.time} น.)`;
+      document.getElementById('pushBannerText').textContent = rem.title;
+      document.getElementById('pushBannerActions').classList.remove('hidden');
+      document.getElementById('pushBanner').classList.remove('hidden');
+      renderDashboard();
+    }
+    function hidePushBanner() { 
+      const pb = document.getElementById('pushBanner');
+      if (pb) pb.classList.add('hidden'); 
+      const am = document.getElementById('liveAlarmModal');
+      if (am) am.classList.add('hidden');
+      
+      // หยุดเสียงเมื่อผู้ใช้ปิดแจ้งเตือน ทำเสร็จ หรือเลื่อนเวลา
+      if (currentAlarmAudio) {
+        currentAlarmAudio.pause();
+        currentAlarmAudio.currentTime = 0;
+        currentAlarmAudio = null;
+      }
+    }
+    function completeActiveAlarm() { const pet = pets.find(p=>p.id===activeTriggeredAlarm.petId); if(pet){ const r=pet.reminders.find(x=>x.id===activeTriggeredAlarm.remId); if(r) r.done=true; saveState(); renderDashboard(); } hidePushBanner(); }
+    function snoozeActiveAlarm(min) { const pet = pets.find(p=>p.id===activeTriggeredAlarm.petId); if(pet){ const r=pet.reminders.find(x=>x.id===activeTriggeredAlarm.remId); if(r){ r.time=getFutureTimeString(min); r.notified=false; } saveState(); renderDashboard(); } hidePushBanner(); }
+    
+    function updateEngine() {
+      const now = new Date();
+      const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+      if(document.getElementById('phoneClock')) document.getElementById('phoneClock').textContent = timeStr;
+      if(document.getElementById('liveBigClock')) document.getElementById('liveBigClock').textContent = timeStr;
+      if(document.getElementById('liveThaiDateText')) document.getElementById('liveThaiDateText').textContent = now.toLocaleDateString('th-TH', { weekday:'short', day:'numeric', month:'short', year:'numeric' });
+
+      const pet = getActivePet();
+      if(pet) pet.reminders.forEach(r => {
+        const b = document.getElementById(`countdown-badge-${r.id}`);
+        if(b) { const info = formatLiveCountdown(r); b.textContent = info.text; b.className = `badge text-[10px] py-0 px-2 ${info.badgeClass}`; }
+      });
+
+      const nowMs = now.getTime();
+      pets.forEach(p => p.reminders.forEach(r => {
+        if(!r.done && !r.notified) {
+          const parts = r.time.split(':'); const dt = new Date(`${r.date}T${(parts[0]||'00').padStart(2,'0')}:${(parts[1]||'00').padStart(2,'0')}:${(parts[2]||'00').padStart(2,'0')}`);
+          const target = isNaN(dt.getTime()) ? null : dt.getTime();
+          if(target && nowMs >= target && (nowMs - target) <= 15*60*1000) { r.notified = true; saveState(); fireRealTimeAlarm(p, r); }
+        }
+      }));
+    }
+
+    function toggleLayoutMode() {
+      isFullWidthLayout = !isFullWidthLayout;
+      const sb = document.getElementById('leftSidebar'), fc = document.getElementById('phoneFrameContainer'), sc = document.getElementById('appSimulatorCol');
+      if (isFullWidthLayout) {
+        sb.classList.add('lg:hidden'); sc.className = 'lg:col-span-12 flex justify-center w-full';
+        fc.className = 'w-full max-w-4xl bg-white dark:bg-slate-900 rounded-[2rem] shadow-floating border-[6px] border-slate-100 dark:border-slate-800 overflow-hidden flex flex-col h-[850px] max-h-[90vh] relative transition-all duration-300';
+      } else {
+        sb.classList.remove('lg:hidden'); sc.className = 'lg:col-span-7 flex justify-center w-full';
+        fc.className = 'w-full max-w-[440px] bg-white dark:bg-slate-900 rounded-[2rem] shadow-floating border-[6px] border-slate-100 dark:border-slate-800 overflow-hidden flex flex-col h-[850px] max-h-[90vh] relative transition-all duration-300';
+      }
+    }
+    function toggleSoundMute() {
+      isSoundMuted = !isSoundMuted;
+      const btn = document.getElementById('btnSoundStatus');
+      btn.innerHTML = isSoundMuted ? '<i class="fa-solid fa-volume-xmark text-slate-400"></i>' : '<i class="fa-solid fa-volume-high text-indigo-500"></i>';
+      showToast(isSoundMuted ? 'ปิดเสียงเตือนแล้ว' : 'เปิดเสียงเตือนแล้ว');
+    }
+
+    // AI & Health (Stubs for full file completeness)
+    function renderHealthBook() {
+      const p = getActivePet(); const c = document.getElementById('vaccineListContainer');
+      if(!p || !p.vaccines.length) { c.innerHTML = `<div class="modern-card p-4 text-center text-xs text-slate-500">ไม่มีประวัติวัคซีน</div>`; return; }
+      c.innerHTML = p.vaccines.map(v => `<div class="modern-card p-3 space-y-1"><div class="flex justify-between items-center"><h4 class="font-bold text-xs text-slate-900 dark:text-white">${v.name}</h4><span class="text-[10px] bg-slate-100 dark:bg-slate-800 px-2 rounded">${v.date}</span></div><p class="text-[10px] text-slate-500">${v.clinic} (Lot: ${v.lot})</p><button onclick="deleteVaccine('${v.id}')" class="text-[10px] text-rose-500">ลบ</button></div>`).join('');
+    }
+    function toggleVaccineForm() { document.getElementById('vaccineForm').classList.toggle('hidden'); }
+    function handleAddVaccine(e) {
+      e.preventDefault(); const p=getActivePet();
+      p.vaccines.unshift({ id:'v-'+Date.now(), name:document.getElementById('vacName').value, date:document.getElementById('vacDate').value, status:document.getElementById('vacStatus').value, clinic:document.getElementById('vacClinic').value, lot:document.getElementById('vacLot').value });
+      saveState(); renderHealthBook(); document.getElementById('vaccineForm').classList.add('hidden'); showToast('บันทึกวัคซีนแล้ว');
+    }
+    function deleteVaccine(id) { getActivePet().vaccines = getActivePet().vaccines.filter(x=>x.id!==id); saveState(); renderHealthBook(); }
+    
+    function fillAIFromActivePet() {
+      const p = getActivePet();
+      document.getElementById('aiPetType').value = p.speciesLabel; document.getElementById('aiBreed').value = p.breed; document.getElementById('aiWeight').value = p.weight;
+    }
+    function generateAICarePlan() {
+      const w = parseFloat(document.getElementById('aiWeight').value)||5;
+      const rer = Math.round(70*Math.pow(w,0.75)); const mer = Math.round(rer*1.6); const grams = Math.round(mer/3.6);
+      document.getElementById('aiResultContainer').innerHTML = `<div class="modern-card p-4 space-y-2"><span class="badge bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">ผลวิเคราะห์</span><div class="grid grid-cols-2 gap-2 text-xs"><div class="bg-slate-50 dark:bg-slate-800 p-2 rounded-xl">พลังงาน: <b>${mer} kcal</b></div><div class="bg-slate-50 dark:bg-slate-800 p-2 rounded-xl">อาหารเม็ด: <b>~${grams} g/day</b></div></div></div>`;
+    }
+
+    window.onload = function() {
+      document.getElementById('expDate').value = getTodayDateString();
+      loadState(); document.getElementById('remDate').value = getTodayDateString(); document.getElementById('remTime').value = getFutureTimeString(2); document.getElementById('vacDate').value = getTodayDateString();
+      renderAll(); setInterval(updateEngine, 1000); updateEngine();
+    };
+  </script>
+</body>
+</html>
