@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>PetHelper Enterprise v4 - Smart Pet Care & Phuket Vet Map</title>
+  <title>PetHelper Enterprise v5 - Smart Pet Care & Phuket Real Vet Map</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -55,41 +55,41 @@
       font-family: 'Kanit', 'Inter', sans-serif;
     }
 
-    /* Glassmorphism Classes */
+    /* Glassmorphism & Surface Classes */
     .glass-header {
-      background: rgba(255, 255, 255, 0.88);
+      background: rgba(255, 255, 255, 0.90);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
     }
     .dark .glass-header {
-      background: rgba(15, 23, 42, 0.88);
+      background: rgba(15, 23, 42, 0.90);
       border-bottom-color: rgba(51, 65, 85, 0.6);
     }
 
     .modern-card {
       background: #FFFFFF;
       border: 1px solid #E2E8F0;
-      border-radius: 18px;
-      box-shadow: 0 4px 24px -4px rgba(15, 23, 42, 0.05);
+      border-radius: 20px;
+      box-shadow: 0 4px 20px -3px rgba(15, 23, 42, 0.04), 0 2px 6px -2px rgba(15, 23, 42, 0.02);
       transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .modern-card:hover {
-      box-shadow: 0 10px 28px -6px rgba(79, 70, 229, 0.08);
+      box-shadow: 0 12px 28px -6px rgba(79, 70, 229, 0.08), 0 4px 10px -3px rgba(15, 23, 42, 0.03);
     }
     .dark .modern-card {
       background: #0F172A;
       border: 1px solid #1E293B;
-      box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.4);
     }
 
     .modern-input {
       border: 1px solid #CBD5E1;
       border-radius: 12px;
-      padding: 10px 14px;
+      padding: 9px 13px;
       background: #F8FAFC;
-      font-size: 0.875rem;
+      font-size: 0.85rem;
       outline: none;
-      transition: all 0.2s;
+      transition: all 0.18s;
       width: 100%;
       color: #0F172A;
     }
@@ -102,7 +102,7 @@
     .modern-input:focus {
       background: #FFFFFF;
       border-color: #4F46E5;
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.14);
     }
     .dark .modern-input:focus {
       background: #0F172A;
@@ -119,11 +119,11 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 7px;
+      gap: 6px;
       box-shadow: 0 4px 12px rgba(79, 70, 229, 0.22);
     }
-    .btn-primary:hover { filter: brightness(1.06); transform: translateY(-1px); }
-    .btn-primary:active { transform: translateY(1px); }
+    .btn-primary:hover { filter: brightness(1.07); transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(0px); }
 
     .btn-secondary {
       background-color: #F1F5F9;
@@ -135,7 +135,7 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 7px;
+      gap: 6px;
     }
     .btn-secondary:hover { background-color: #E2E8F0; }
     .dark .btn-secondary {
@@ -151,7 +151,7 @@
       border-radius: 999px;
       padding: 3.5px 11px;
       font-weight: 500;
-      font-size: 0.75rem;
+      font-size: 0.74rem;
       display: inline-flex;
       align-items: center;
       gap: 5px;
@@ -162,21 +162,27 @@
     .hide-scroll::-webkit-scrollbar { display: none; }
     .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
-    /* Map & UI Animations */
-    @keyframes routeDash { to { stroke-dashoffset: -40; } }
-    .animated-route { animation: routeDash 1.2s linear infinite; }
-    @keyframes radarPulse { 0% { r: 6; opacity: 0.9; } 70% { r: 38; opacity: 0; } 100% { r: 38; opacity: 0; } }
-    .gps-pulse { animation: radarPulse 2s infinite ease-out; }
+    .thin-scroll::-webkit-scrollbar { width: 5px; height: 5px; }
+    .thin-scroll::-webkit-scrollbar-track { background: transparent; }
+    .thin-scroll::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.4); border-radius: 999px; }
 
-    @keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    /* UI Animations */
+    @keyframes slideDown { from { transform: translate(-50%, -100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
     .animate-slide-down { animation: slideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     @keyframes fadeUp { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    .animate-fade-up { animation: fadeUp 0.25s ease-out forwards; }
+    .animate-fade-up { animation: fadeUp 0.24s ease-out forwards; }
 
-    /* Leaflet Custom Pin Styling */
+    /* Leaflet Custom Pin & Popup Styling */
     .leaflet-container {
       font-family: 'Kanit', 'Inter', sans-serif !important;
       z-index: 10;
+    }
+    .vet-pin-wrapper {
+      position: relative;
+      display: flex;
+       flex-direction: column;
+      align-items: center;
+      transform: translateY(-6px);
     }
     .custom-vet-marker {
       display: flex;
@@ -184,13 +190,25 @@
       justify-content: center;
       border-radius: 9999px;
       border: 3px solid #FFFFFF;
-      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.32);
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.35);
       color: #FFFFFF;
       font-size: 14px;
-      transition: transform 0.2s;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .custom-vet-marker:hover {
       transform: scale(1.15);
+    }
+    .vet-pin-label {
+      margin-top: 3px;
+      background: rgba(15, 23, 42, 0.88);
+      color: #FFFFFF;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 1px 7px;
+      border-radius: 999px;
+      white-space: nowrap;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.2);
     }
     .user-gps-dot {
       width: 22px;
@@ -198,36 +216,50 @@
       border-radius: 9999px;
       background: #4F46E5;
       border: 3px solid #FFFFFF;
-      box-shadow: 0 0 0 6px rgba(79, 70, 229, 0.28), 0 4px 10px rgba(0,0,0,0.3);
+      box-shadow: 0 0 0 8px rgba(79, 70, 229, 0.25), 0 4px 10px rgba(0,0,0,0.35);
     }
     .leaflet-popup-content-wrapper {
-      border-radius: 14px !important;
-      padding: 2px !important;
+      border-radius: 16px !important;
+      padding: 4px !important;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.22) !important;
+    }
+    .leaflet-popup-content {
+      margin: 10px 12px !important;
     }
   </style>
 </head>
-<body class="h-[100dvh] w-full flex flex-col overflow-hidden bg-slate-100 dark:bg-slate-950 transition-colors duration-300 relative text-slate-900 dark:text-slate-100">
+<body class="h-[100dvh] w-full flex flex-col overflow-hidden bg-slate-100/90 dark:bg-slate-950 transition-colors duration-300 relative text-slate-900 dark:text-slate-100">
 
-  <!-- ==================== TOP APP BAR ==================== -->
-  <header class="bg-gradient-to-r from-indigo-600 via-indigo-700 to-violet-700 dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 text-white px-4 py-2.5 flex items-center justify-between z-30 shrink-0 shadow-md border-b border-indigo-500/30">
-    <div class="max-w-5xl w-full mx-auto flex items-center justify-between">
+  <!-- ==================== UNIFIED TOP NAVIGATION & STATUS BAR ==================== -->
+  <header class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white px-4 py-2.5 shrink-0 z-30 shadow-md border-b border-indigo-500/20">
+    <div class="max-w-6xl w-full mx-auto flex items-center justify-between gap-2">
+      <!-- Brand Identity -->
       <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-xl bg-white/15 backdrop-blur flex items-center justify-center shadow-inner">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-md border border-white/15">
           <i class="fa-solid fa-paw text-sm text-amber-300"></i>
         </div>
         <div>
           <div class="flex items-center gap-2">
             <span class="font-bold tracking-tight text-sm sm:text-base leading-none">PetHelper</span>
-            <span class="text-[10px] bg-white/20 backdrop-blur px-2 py-0.5 rounded-full font-medium">Enterprise v4.5</span>
+            <span class="text-[10px] bg-indigo-500/30 border border-indigo-400/30 text-indigo-200 px-2 py-0.5 rounded-full font-medium">Enterprise v5</span>
           </div>
-          <p class="text-[10px] text-indigo-100/80 hidden sm:block mt-0.5">ระบบดูแลสัตว์เลี้ยงอัจฉริยะ & แผนที่โรงพยาบาลสัตว์ภูเก็ต</p>
+          <div class="flex items-center gap-2 text-[10px] text-slate-300 mt-0.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span id="phoneClock" class="font-mono font-semibold text-indigo-200">00:00:00</span>
+            <span class="hidden md:inline text-slate-400">• ระบบดูแลสัตว์เลี้ยง & แผนที่ รพ.สัตว์ภูเก็ต</span>
+          </div>
         </div>
       </div>
 
-      <div class="flex items-center gap-2 sm:gap-3 text-xs">
+      <!-- Quick System Controls -->
+      <div class="flex items-center gap-1.5 sm:gap-2 text-xs">
         <button onclick="unlockAudioAndTest()" class="px-2.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 transition flex items-center gap-1.5" title="ทดสอบระบบเสียงแจ้งเตือน">
           <i class="fa-solid fa-bell text-amber-300"></i>
           <span class="hidden sm:inline text-[11px]">ทดสอบเสียง</span>
+        </button>
+        <button onclick="toggleSoundMute()" id="btnSoundStatus" class="px-2.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 transition flex items-center gap-1 text-[11px]" title="สลับเสียงแจ้งเตือน">
+          <i class="fa-solid fa-volume-high text-emerald-400"></i>
+          <span class="hidden md:inline">เปิดเสียง</span>
         </button>
         <button onclick="toggleDarkMode()" class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 transition flex items-center justify-center" title="สลับโหมดมืด/สว่าง">
           <i id="themeIcon" class="fa-solid fa-moon"></i>
@@ -239,26 +271,28 @@
     </div>
   </header>
 
-  <!-- ==================== STATUS BAR ==================== -->
-  <div class="bg-white dark:bg-slate-900 px-4 py-1.5 shrink-0 z-20 border-b border-slate-200/80 dark:border-slate-800">
-    <div class="max-w-5xl w-full mx-auto flex items-center justify-between text-xs font-medium">
-      <div class="flex items-center gap-2">
-        <i class="fa-regular fa-clock text-indigo-500 text-[11px]"></i>
-        <div id="phoneClock" class="font-bold font-mono tracking-wide text-slate-900 dark:text-white">00:00:00</div>
-      </div>
-      
-      <div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 text-[11px]">
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span>ระบบแจ้งเตือนและพิกัด GPS พร้อมทำงาน</span>
+  <!-- ==================== UNIFIED PET SWITCHER & ACTIVE PROFILE BAR ==================== -->
+  <div class="bg-white dark:bg-slate-900 px-4 py-2.5 shrink-0 z-20 border-b border-slate-200/80 dark:border-slate-800 shadow-sm">
+    <div class="max-w-6xl w-full mx-auto flex flex-col md:flex-row md:items-center justify-between gap-2.5">
+      <!-- Left: Pet Selector Pills + Add Button -->
+      <div class="flex items-center gap-2 overflow-x-auto hide-scroll py-0.5">
+        <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 shrink-0 flex items-center gap-1">
+          <i class="fa-solid fa-paw text-indigo-600 dark:text-indigo-400"></i> (<span id="petCountBadge">0</span>)
+        </span>
+        <div id="petSelectorList" class="flex items-center gap-1.5 shrink-0">
+          <!-- Populated by JS -->
+        </div>
+        <button onclick="openPetFormModal('add')" class="btn-primary px-2.5 py-1 text-xs shrink-0">
+          <i class="fa-solid fa-plus text-[10px]"></i> เพิ่ม
+        </button>
+        <button onclick="openPetFormModal('edit')" id="btnEditPetTop" class="btn-secondary px-2.5 py-1 text-xs shrink-0">
+          <i class="fa-solid fa-pen text-[10px]"></i> แก้ไขโปรไฟล์
+        </button>
       </div>
 
-      <div class="flex items-center gap-2.5 text-slate-700 dark:text-slate-300">
-        <button onclick="toggleSoundMute()" id="btnSoundStatus" class="hover:text-indigo-500 transition flex items-center gap-1 text-[11px]" title="สลับเสียงแจ้งเตือน">
-          <i class="fa-solid fa-volume-high text-indigo-600 dark:text-indigo-400"></i>
-          <span class="hidden sm:inline">เปิดเสียง</span>
-        </button>
-        <span class="text-slate-300 dark:text-slate-700">|</span>
-        <i class="fa-solid fa-shield-heart text-xs text-emerald-500" title="บันทึกข้อมูลอัตโนมัติ"></i>
+      <!-- Right: Active Pet Vital Summary -->
+      <div id="activePetSummary" class="shrink-0">
+        <!-- Populated by JS -->
       </div>
     </div>
   </div>
@@ -290,64 +324,36 @@
     </div>
   </div>
 
-  <!-- Persistent Pet Profile Header -->
-  <div class="bg-white dark:bg-slate-900 px-4 py-3 shrink-0 z-10 border-b border-slate-200/80 dark:border-slate-800 shadow-sm">
-    <div class="max-w-5xl w-full mx-auto">
-      <div class="flex items-center justify-between mb-2.5">
-        <span class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-          <i class="fa-solid fa-paw text-indigo-600 dark:text-indigo-400"></i> สัตว์เลี้ยงของคุณ (<span id="petCountBadge">0</span>)
-        </span>
-        <div class="flex items-center gap-2">
-          <button onclick="openPetFormModal('edit')" id="btnEditPetTop" class="btn-secondary px-2.5 py-1 text-xs">
-            <i class="fa-solid fa-pen text-[10px]"></i> แก้ไขโปรไฟล์
-          </button>
-          <button onclick="openPetFormModal('add')" class="btn-primary px-3 py-1 text-xs">
-            <i class="fa-solid fa-plus text-[10px]"></i> เพิ่ม
-          </button>
-        </div>
-      </div>
-
-      <!-- Pet Selector Pills -->
-      <div id="petSelectorList" class="flex gap-2 overflow-x-auto pb-1 hide-scroll">
-        <!-- Populated by JS -->
-      </div>
-    </div>
-  </div>
-
-  <!-- Scrollable App Viewport -->
-  <main class="flex-1 overflow-y-auto bg-slate-100/80 dark:bg-slate-950 relative" id="appViewport">
-    
-    <!-- Sticky Active Pet Summary -->
-    <div id="activePetSummary" class="sticky top-0 glass-header z-20 border-b border-slate-200/80 dark:border-slate-800 px-4 py-2.5 shadow-sm">
-      <!-- Populated by JS -->
-    </div>
-
-    <div class="max-w-5xl w-full mx-auto p-4 space-y-4 pb-12">
+  <!-- ==================== MAIN SCROLLABLE VIEWPORT ==================== -->
+  <main class="flex-1 overflow-y-auto relative thin-scroll" id="appViewport">
+    <div class="max-w-6xl w-full mx-auto p-3.5 sm:p-5 space-y-4 pb-16">
 
       <!-- ==================== TAB 1: DASHBOARD ==================== -->
       <div id="tab-dashboard" class="space-y-4 animate-fade-up">
 
+        <!-- Top Bento Row: Clock Engine + Progress Overview -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-          <!-- Real-Time Alarm Control Center Banner -->
-          <div class="lg:col-span-6 modern-card p-4 sm:p-5 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white border-none relative overflow-hidden shadow-lg flex flex-col justify-between">
+          <!-- Real-Time Alarm Control Center -->
+          <div class="lg:col-span-5 modern-card p-4 sm:p-5 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white border-none relative overflow-hidden shadow-lg flex flex-col justify-between">
             <div class="flex items-center justify-between gap-2 mb-3">
               <div>
                 <div class="flex items-center gap-2">
                   <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                  <span class="text-[11px] font-semibold text-emerald-400 uppercase tracking-wider">Smart Alarm & Clock Engine</span>
+                  <span class="text-[10px] font-semibold text-emerald-400 uppercase tracking-wider">Real-Time Alarm Engine</span>
                 </div>
                 <div id="liveThaiDateText" class="text-xs text-slate-300 mt-1">กำลังโหลดวันที่...</div>
               </div>
               <div class="text-right">
                 <div id="liveBigClock" class="text-2xl sm:text-3xl font-bold font-mono text-indigo-300 leading-none tracking-tight">00:00:00</div>
-                <span class="text-[10px] text-slate-400">เวลาปัจจุบัน (Real-Time)</span>
+                <span class="text-[10px] text-slate-400">เวลาปัจจุบัน</span>
               </div>
             </div>
 
             <!-- Quick Preset Timers -->
             <div class="bg-white/10 backdrop-blur border border-white/15 rounded-xl p-3">
               <div class="flex items-center justify-between text-[11px] mb-2 text-indigo-100">
-                <span class="font-medium"><i class="fa-solid fa-stopwatch text-amber-300 mr-1.5"></i>ตั้งปลุกทดสอบระบบด่วน (เสียงสังเคราะห์ Web Audio):</span>
+                <span class="font-medium"><i class="fa-solid fa-stopwatch text-amber-300 mr-1.5"></i>ตั้งปลุกทดสอบระบบด่วน:</span>
+                <span class="text-[10px] text-indigo-300">Web Audio Chime</span>
               </div>
               <div class="grid grid-cols-3 gap-2">
                 <button onclick="scheduleQuickTestAlarm(10)" class="bg-rose-500 hover:bg-rose-600 text-white py-1.5 px-2 rounded-lg text-xs font-medium transition-all shadow-sm">
@@ -363,47 +369,86 @@
             </div>
           </div>
 
-          <!-- Daily Progress Card -->
-          <div class="lg:col-span-6 modern-card p-4 sm:p-5 flex flex-col justify-between">
+          <!-- Daily Progress & Quick Stats Card -->
+          <div class="lg:col-span-7 modern-card p-4 sm:p-5 flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between mb-2">
-                <span class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
-                  <i class="fa-solid fa-chart-pie text-indigo-600 dark:text-indigo-400"></i> ความคืบหน้าการดูแลวันนี้
-                </span>
-                <span id="progressPercentText" class="badge bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">0% สำเร็จ</span>
+                <div>
+                  <span class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                    <i class="fa-solid fa-chart-pie text-indigo-600 dark:text-indigo-400"></i> ภาพรวมความคืบหน้าการดูแลวันนี้
+                  </span>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400">ติดตามกิจวัตรประจำวัน นัดหมายยา และประวัติวัคซีนของสัตว์เลี้ยง</p>
+                </div>
+                <span id="progressPercentText" class="badge bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 text-xs font-bold">0% สำเร็จ</span>
               </div>
               <div class="w-full h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mb-4 p-0.5">
-                <div id="progressBarFill" class="h-full bg-gradient-to-r from-indigo-500 to-emerald-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+                <div id="progressBarFill" class="h-full bg-gradient-to-r from-indigo-500 via-violet-500 to-emerald-500 rounded-full transition-all duration-500" style="width: 0%"></div>
               </div>
             </div>
-            <div class="grid grid-cols-3 gap-2.5">
-              <div class="bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/70 dark:border-amber-800/50 rounded-xl p-2.5 text-center">
-                <div class="text-[11px] font-semibold text-amber-700 dark:text-amber-400">รอดำเนินการ</div>
-                <div id="statPending" class="text-xl font-bold text-amber-700 dark:text-amber-300 mt-0.5">0</div>
+
+            <div class="grid grid-cols-3 gap-3">
+              <div class="bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/70 dark:border-amber-800/50 rounded-2xl p-3 flex items-center justify-between">
+                <div>
+                  <div class="text-[11px] font-semibold text-amber-700 dark:text-amber-400">รอดำเนินการ</div>
+                  <div id="statPending" class="text-xl sm:text-2xl font-bold text-amber-700 dark:text-amber-300 mt-0.5">0</div>
+                </div>
+                <div class="w-9 h-9 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center text-sm">
+                  <i class="fa-solid fa-hourglass-half"></i>
+                </div>
               </div>
-              <div class="bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200/70 dark:border-emerald-800/50 rounded-xl p-2.5 text-center">
-                <div class="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">เสร็จแล้ว</div>
-                <div id="statDone" class="text-xl font-bold text-emerald-700 dark:text-emerald-300 mt-0.5">0</div>
+
+              <div class="bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200/70 dark:border-emerald-800/50 rounded-2xl p-3 flex items-center justify-between">
+                <div>
+                  <div class="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">เสร็จแล้ว</div>
+                  <div id="statDone" class="text-xl sm:text-2xl font-bold text-emerald-700 dark:text-emerald-300 mt-0.5">0</div>
+                </div>
+                <div class="w-9 h-9 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-sm">
+                  <i class="fa-solid fa-check-double"></i>
+                </div>
               </div>
-              <div class="bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-200/70 dark:border-indigo-800/50 rounded-xl p-2.5 text-center cursor-pointer hover:bg-indigo-100/70 transition" onclick="switchTab('health')">
-                <div class="text-[11px] font-semibold text-indigo-700 dark:text-indigo-400">สมุดวัคซีน</div>
-                <div id="statVaccines" class="text-xl font-bold text-indigo-700 dark:text-indigo-300 mt-0.5">0</div>
+
+              <div class="bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-200/70 dark:border-indigo-800/50 rounded-2xl p-3 flex items-center justify-between cursor-pointer hover:bg-indigo-100/70 transition" onclick="switchTab('health')">
+                <div>
+                  <div class="text-[11px] font-semibold text-indigo-700 dark:text-indigo-400">สมุดวัคซีน</div>
+                  <div id="statVaccines" class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mt-0.5">0</div>
+                </div>
+                <div class="w-9 h-9 rounded-xl bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-sm">
+                  <i class="fa-solid fa-syringe"></i>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
+        <!-- Second Row: Create Reminder + Task Checklist -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-          <!-- New Reminder Form -->
-          <div class="lg:col-span-5 modern-card p-4 sm:p-5 h-fit">
-            <div class="flex items-center justify-between mb-3">
+          <!-- New Reminder Form with Quick Templates -->
+          <div class="lg:col-span-5 modern-card p-4 sm:p-5 h-fit space-y-3.5">
+            <div class="flex items-center justify-between">
               <h3 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
                 <i class="fa-solid fa-calendar-plus text-indigo-600 dark:text-indigo-400"></i> สร้างรายการแจ้งเตือนใหม่
               </h3>
-              <button type="button" onclick="setFormTimeToNextMinute(1)" class="text-[11px] font-medium text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1">
+              <button type="button" onclick="setFormTimeToNextMinute(1)" class="text-[11px] font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
                 + 1 นาทีข้างหน้า
               </button>
             </div>
+
+            <!-- Quick Fill Chips -->
+            <div>
+              <span class="text-[10px] font-semibold text-slate-400 uppercase block mb-1.5">เทมเพลตด่วน (คลิกเพื่อกรอกอัตโนมัติ):</span>
+              <div class="flex flex-wrap gap-1.5">
+                <button type="button" onclick="fillQuickReminderTemplate('ให้อาหารเม็ดและเปลี่ยนน้ำสะอาด', 'food')" class="text-[11px] px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-indigo-50 dark:bg-slate-800 dark:hover:bg-indigo-950/60 text-slate-700 dark:text-slate-300 transition">
+                  🍖 ให้อาหาร+น้ำ
+                </button>
+                <button type="button" onclick="fillQuickReminderTemplate('ป้อนยาป้องกันเห็บหมัดและพยาธิหนอนหัวใจ', 'med')" class="text-[11px] px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-indigo-50 dark:bg-slate-800 dark:hover:bg-indigo-950/60 text-slate-700 dark:text-slate-300 transition">
+                  💊 ยาเห็บหมัด
+                </button>
+                <button type="button" onclick="fillQuickReminderTemplate('อาบน้ำตัดขน แปรงขน และเช็ดหู', 'groom')" class="text-[11px] px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-indigo-50 dark:bg-slate-800 dark:hover:bg-indigo-950/60 text-slate-700 dark:text-slate-300 transition">
+                  🛁 อาบน้ำ/เช็ดหู
+                </button>
+              </div>
+            </div>
+
             <form id="reminderForm" onsubmit="handleAddReminder(event)" class="space-y-3">
               <div>
                 <label class="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block mb-1">กิจกรรมที่ต้องดูแล *</label>
@@ -414,7 +459,7 @@
                   <label class="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block mb-1">หมวดหมู่</label>
                   <select id="remCategory" class="modern-input text-xs py-2 px-2.5">
                     <option value="food">อาหาร</option>
-                    <option value="med">💊 ยา / เห็บหมัด</option>
+                    <option value="med">ยา / เห็บหมัด</option>
                     <option value="vaccine">วัคซีน</option>
                     <option value="groom">อาบน้ำตัดขน</option>
                   </select>
@@ -435,25 +480,27 @@
           </div>
 
           <!-- Checklist Header & Filter -->
-          <div class="lg:col-span-7 modern-card p-4 sm:p-5">
-            <div class="flex items-center justify-between mb-3">
-              <h3 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
-                <i class="fa-solid fa-list-check text-indigo-600 dark:text-indigo-400"></i> รายการนัดหมายและกิจวัตร
-              </h3>
-              <button onclick="clearCompletedTasks()" class="text-[11px] text-rose-600 dark:text-rose-400 hover:underline font-medium flex items-center gap-1">
-                <i class="fa-solid fa-broom text-[10px]"></i> ล้างรายการที่เสร็จแล้ว
-              </button>
-            </div>
-            <div class="flex gap-1.5 overflow-x-auto pb-2 mb-3 hide-scroll">
-              <button onclick="setTaskFilter('all')" id="filterTask-all" class="badge bg-slate-900 text-white dark:bg-white dark:text-slate-900 cursor-pointer shrink-0">ทั้งหมด</button>
-              <button onclick="setTaskFilter('pending')" id="filterTask-pending" class="badge bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 cursor-pointer shrink-0">รอดำเนินการ</button>
-              <button onclick="setTaskFilter('food')" id="filterTask-food" class="badge bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 cursor-pointer shrink-0">อาหาร</button>
-              <button onclick="setTaskFilter('med')" id="filterTask-med" class="badge bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 cursor-pointer shrink-0">ยา/เห็บหมัด</button>
-              <button onclick="setTaskFilter('vaccine')" id="filterTask-vaccine" class="badge bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 cursor-pointer shrink-0">วัคซีน</button>
-              <button onclick="setTaskFilter('groom')" id="filterTask-groom" class="badge bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 cursor-pointer shrink-0">อาบน้ำ</button>
-            </div>
-            <div id="reminderListContainer" class="space-y-2.5">
-              <!-- Populated by JS -->
+          <div class="lg:col-span-7 modern-card p-4 sm:p-5 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <i class="fa-solid fa-list-check text-indigo-600 dark:text-indigo-400"></i> รายการนัดหมายและกิจวัตร
+                </h3>
+                <button onclick="clearCompletedTasks()" class="text-[11px] text-rose-600 dark:text-rose-400 hover:underline font-medium">
+                  ล้างรายการที่เสร็จแล้ว
+                </button>
+              </div>
+              <div class="flex gap-1.5 overflow-x-auto pb-2 mb-3 hide-scroll">
+                <button onclick="setTaskFilter('all')" id="filterTask-all" class="badge bg-slate-900 text-white dark:bg-white dark:text-slate-900 cursor-pointer shrink-0">ทั้งหมด</button>
+                <button onclick="setTaskFilter('pending')" id="filterTask-pending" class="badge bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 cursor-pointer shrink-0">รอดำเนินการ</button>
+                <button onclick="setTaskFilter('food')" id="filterTask-food" class="badge bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 cursor-pointer shrink-0">อาหาร</button>
+                <button onclick="setTaskFilter('med')" id="filterTask-med" class="badge bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 cursor-pointer shrink-0">ยา/เห็บหมัด</button>
+                <button onclick="setTaskFilter('vaccine')" id="filterTask-vaccine" class="badge bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 cursor-pointer shrink-0">วัคซีน</button>
+                <button onclick="setTaskFilter('groom')" id="filterTask-groom" class="badge bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 cursor-pointer shrink-0">อาบน้ำ</button>
+              </div>
+              <div id="reminderListContainer" class="space-y-2.5 max-h-[420px] overflow-y-auto thin-scroll pr-1">
+                <!-- Populated by JS -->
+              </div>
             </div>
           </div>
         </div>
@@ -462,24 +509,29 @@
       <!-- ==================== TAB 2: DIGITAL HEALTH BOOK ==================== -->
       <div id="tab-health" class="hidden space-y-4 animate-fade-up">
         
-        <div class="modern-card p-4 sm:p-5 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white border-none shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="modern-card p-5 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white border-none shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div class="flex items-start gap-3.5">
             <div class="w-12 h-12 rounded-2xl bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 flex items-center justify-center text-xl shrink-0">
-              <i class="fa-solid fa-book-medical"></i>
+              <i class="fa-solid fa-passport"></i>
             </div>
             <div>
-              <div class="flex items-center gap-2">
+              <div class="flex flex-wrap items-center gap-2">
                 <h3 class="font-bold text-sm sm:text-base">สมุดสุขภาพ & วัคซีนดิจิทัล (Digital Pet Passport)</h3>
-                <span class="badge bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[10px]">Verified Stamp</span>
+                <span class="badge bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[10px]"><i class="fa-solid fa-certificate"></i> Verified Stamp</span>
               </div>
               <p class="text-xs text-slate-300 leading-relaxed mt-1">
-                บันทึกประวัติการฉีดวัคซีน เลข Lot ยา และสถานพยาบาล พร้อมออกใบรับรองดิจิทัลและส่งแจ้งเตือนเข้าหน้าหลักอัตโนมัติ
+                จัดเก็บประวัติการฉีดวัคซีน เลข Lot ยา และคลินิก พร้อมออกใบรับรองสุขภาพดิจิทัลสำหรับแสดงต่อโรงพยาบาลสัตว์หรือโรงแรมสัตว์เลี้ยง
               </p>
             </div>
           </div>
-          <button onclick="toggleVaccineForm()" class="btn-primary px-4 py-2.5 text-xs shrink-0">
-            <i class="fa-solid fa-plus"></i> เพิ่มประวัติวัคซีน
-          </button>
+          <div class="flex items-center gap-2 shrink-0">
+            <button onclick="openHealthPassportModal()" class="btn-secondary bg-white/10 hover:bg-white/20 text-white border-white/20 px-3.5 py-2.5 text-xs">
+              <i class="fa-solid fa-id-card"></i> ดูบัตรรับรองดิจิทัล
+            </button>
+            <button onclick="toggleVaccineForm()" class="btn-primary px-4 py-2.5 text-xs">
+              <i class="fa-solid fa-plus"></i> เพิ่มประวัติวัคซีน
+            </button>
+          </div>
         </div>
 
         <form id="vaccineForm" onsubmit="handleAddVaccine(event)" class="hidden modern-card p-4 sm:p-5 space-y-3 shadow-md border-2 border-indigo-500/30">
@@ -502,8 +554,8 @@
               <div>
                 <label class="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block mb-1">สถานะ</label>
                 <select id="vacStatus" class="modern-input text-xs py-2">
-                  <option value="completed">✅ ฉีดแล้ว</option>
-                  <option value="upcoming">📅 นัดฉีดเข็มถัดไป</option>
+                  <option value="completed">ฉีดแล้ว</option>
+                  <option value="upcoming">นัดฉีดเข็มถัดไป</option>
                 </select>
               </div>
             </div>
@@ -524,11 +576,11 @@
           </div>
           <div class="flex justify-end gap-2 pt-2">
             <button type="button" onclick="toggleVaccineForm()" class="btn-secondary px-4 py-2 text-xs">ยกเลิก</button>
-            <button type="submit" class="btn-primary px-5 py-2 text-xs"><i class="fa-solid fa-check"></i> บันทึกลงสมุดสุขภาพ</button>
+            <button type="submit" class="btn-primary px-5 py-2 text-xs">บันทึกลงสมุดสุขภาพ</button>
           </div>
         </form>
 
-        <div id="vaccineListContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div id="vaccineListContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
           <!-- Populated by JS -->
         </div>
       </div>
@@ -541,10 +593,10 @@
           <div class="lg:col-span-7 modern-card p-5 bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-800 text-white border-none shadow-lg flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between mb-1">
-                <span class="text-xs font-medium text-indigo-100">สรุปค่าใช้จ่ายสะสมของสัตว์เลี้ยง</span>
-                <span class="badge bg-white/15 text-white text-[10px]"><i class="fa-solid fa-wallet"></i> Budget Tracker</span>
+                <span class="text-xs font-medium text-indigo-100">บัญชีค่าใช้จ่ายสะสมของสัตว์เลี้ยง</span>
+                <span class="badge bg-white/15 text-white text-[10px]"><i class="fa-solid fa-wallet"></i> Smart Pet Budget</span>
               </div>
-              <div class="text-3xl font-bold mb-4 flex items-baseline gap-1.5">
+              <div class="text-3xl sm:text-4xl font-bold mb-4 flex items-baseline gap-1.5">
                 <span id="expenseTotalAmount">0</span> <span class="text-sm font-medium text-indigo-200">บาท</span>
               </div>
             </div>
@@ -603,23 +655,31 @@
                   <input type="date" id="expDate" required class="modern-input text-xs py-2 px-2">
                 </div>
               </div>
-              <button type="submit" class="btn-primary w-full py-2 text-xs"><i class="fa-solid fa-floppy-disk"></i> บันทึกรายจ่าย</button>
+              <button type="submit" class="btn-primary w-full py-2.5 text-xs">บันทึกรายจ่าย</button>
             </form>
           </div>
         </div>
 
-        <!-- Visual Category Breakdown Bar -->
-        <div class="modern-card p-4">
-          <div class="flex items-center justify-between mb-2">
+        <!-- Visual Category Breakdown Bar & Filter -->
+        <div class="modern-card p-4 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
             <span class="text-xs font-bold text-slate-800 dark:text-slate-200">สัดส่วนค่าใช้จ่ายตามหมวดหมู่</span>
-            <span id="expenseCountLabel" class="text-[11px] text-slate-500">0 รายการ</span>
+            <span id="expenseCountLabel" class="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400">0 รายการ</span>
           </div>
           <div id="expenseBreakdownBar" class="w-full h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden flex">
             <!-- Populated by JS -->
           </div>
+          <div class="flex gap-1.5 overflow-x-auto pb-1 hide-scroll pt-1">
+            <button onclick="setExpenseFilter('all')" id="expFilter-all" class="badge bg-slate-900 text-white dark:bg-white dark:text-slate-900 cursor-pointer shrink-0">ทั้งหมด</button>
+            <button onclick="setExpenseFilter('food')" id="expFilter-food" class="badge bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 cursor-pointer shrink-0">🍴 อาหาร</button>
+            <button onclick="setExpenseFilter('medical')" id="expFilter-medical" class="badge bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 cursor-pointer shrink-0">🩺 รักษา/ยา</button>
+            <button onclick="setExpenseFilter('grooming')" id="expFilter-grooming" class="badge bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 cursor-pointer shrink-0">✂️ อาบน้ำตัดขน</button>
+            <button onclick="setExpenseFilter('toys')" id="expFilter-toys" class="badge bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 cursor-pointer shrink-0">🎾 ของเล่น</button>
+            <button onclick="setExpenseFilter('other')" id="expFilter-other" class="badge bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 cursor-pointer shrink-0">📦 อื่นๆ</button>
+          </div>
         </div>
 
-        <div id="expenseListContainer" class="space-y-2.5">
+        <div id="expenseListContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <!-- Populated by JS -->
         </div>
       </div>
@@ -627,19 +687,19 @@
       <!-- ==================== TAB 4: AI CARE PLANNER ==================== -->
       <div id="tab-ai" class="hidden space-y-4 animate-fade-up">
         
-        <div class="modern-card p-4 sm:p-5 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white border-none relative overflow-hidden shadow-md">
-          <div class="flex items-center justify-between mb-2">
+        <div class="modern-card p-5 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white border-none relative overflow-hidden shadow-md">
+          <div class="flex items-center justify-between mb-1.5">
             <span class="badge bg-indigo-500/20 text-indigo-300 border border-indigo-400/30"><i class="fa-solid fa-wand-magic-sparkles"></i> Smart Veterinary Nutrition Planner</span>
             <span class="text-[10px] text-slate-400 font-mono">RER / MER Formula Engine</span>
           </div>
-          <h3 class="font-bold text-sm sm:text-base leading-tight">ระบบวิเคราะห์โภชนาการและตารางการดูแลเฉพาะตัว</h3>
+          <h3 class="font-bold text-sm sm:text-base leading-tight">วิเคราะห์โภชนาการและตารางการดูแลเฉพาะตัวด้วย AI</h3>
           <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-            คำนวณความต้องการพลังงานขณะพัก (RER) และพลังงานต่อวัน (MER) ปริมาณน้ำดื่ม จำนวนมื้ออาหาร และคำแนะนำการดูแลตามชนิดสัตว์เลี้ยง น้ำหนัก และสภาวะสุขภาพจริง
+            คำนวณพลังงานขณะพัก (RER) พลังงานต่อวัน (MER) ปริมาณน้ำดื่มสะอาด ตารางเวลาให้อาหาร และข้อควรระวังด้านโภชนาการตามสายพันธุ์และน้ำหนักจริง
           </p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-          <div class="lg:col-span-5 modern-card p-4 sm:p-5 space-y-3 shadow-sm h-fit">
+          <div class="lg:col-span-5 modern-card p-4 sm:p-5 space-y-3.5 shadow-sm h-fit">
             <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2.5">
               <span class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">ข้อมูลสัตว์เลี้ยงที่จะวิเคราะห์</span>
               <button type="button" onclick="fillAIFromActivePet()" class="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1">
@@ -682,21 +742,31 @@
         </div>
       </div>
 
-      <!-- ==================== TAB 5: REAL INTERACTIVE MAP + GOOGLE MAPS (PHUKET LBS) ==================== -->
+      <!-- ==================== TAB 5: PRO SPLIT-VIEW PHUKET VET MAP (LEAFLET + GOOGLE MAPS) ==================== -->
       <div id="tab-map" class="hidden space-y-4 animate-fade-up">
         
-        <!-- Search & Filter Control Panel -->
-        <div class="modern-card p-4 space-y-3 shadow-sm">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+        <!-- Top Map Command Bar -->
+        <div class="modern-card p-4 space-y-3.5 shadow-sm">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
             <div>
-              <h3 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
-                <i class="fa-solid fa-map-location-dot text-rose-500"></i> แผนที่โรงพยาบาลสัตว์และคลินิกในภูเก็ต (Real GPS & Google Maps)
-              </h3>
+              <div class="flex flex-wrap items-center gap-2">
+                <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2">
+                  <i class="fa-solid fa-map-location-dot text-rose-500"></i> แผนที่โรงพยาบาลสัตว์และคลินิกในภูเก็ต (Real GPS & Google Maps)
+                </h3>
+                <span class="badge bg-rose-50 text-rose-700 dark:bg-rose-950/50 dark:text-rose-300 border border-rose-200 dark:border-rose-800 text-[10px]">
+                  16 แห่งทั่วภูเก็ต
+                </span>
+              </div>
               <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                ข้อมูลพิกัด เบอร์โทรศัพท์ เวลาทำการ และลิงก์นำทาง Google Maps จริงของสถานพยาบาลสัตว์ 16 แห่งทั่วเกาะภูเก็ต
+                ค้นหาคลินิกและโรงพยาบาลสัตว์ใกล้คุณ คำนวณระยะทางจริงพร้อมเวลาเดินทางโดยประมาณ และเปิดนำทางผ่าน Google Maps ได้ทันที
               </p>
             </div>
-            <div class="flex items-center gap-2 shrink-0">
+
+            <!-- Emergency Finder & GPS Actions -->
+            <div class="flex flex-wrap items-center gap-2 shrink-0">
+              <button onclick="findNearestEmergencyVet()" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-xl text-xs font-semibold shadow-sm transition flex items-center gap-1.5">
+                <i class="fa-solid fa-truck-medical animate-pulse"></i> ค้นหา รพ.ฉุกเฉินใกล้ที่สุด
+              </button>
               <button onclick="locateUserRealGPS()" class="btn-secondary px-3 py-1.5 text-xs text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800">
                 <i class="fa-solid fa-location-crosshairs"></i> พิกัดปัจจุบันของฉัน
               </button>
@@ -710,136 +780,85 @@
             </div>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-200/70 dark:border-slate-700">
-            <div class="md:col-span-5">
+          <!-- Filter & Search Row -->
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-50 dark:bg-slate-800/50 p-3 rounded-2xl border border-slate-200/70 dark:border-slate-700">
+            <div class="md:col-span-4">
               <div class="flex justify-between text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                <span>รัศมีค้นหาจากจุดอ้างอิง:</span>
+                <span>รัศมีค้นหาจากตำแหน่งอ้างอิง:</span>
                 <span id="radiusValueLabel" class="text-indigo-600 dark:text-indigo-400 font-bold">25 กม.</span>
               </div>
               <input type="range" id="radiusSlider" min="2" max="45" step="1" value="25" oninput="updateMapRadius(this.value)" class="w-full accent-indigo-600 cursor-pointer">
             </div>
-            <div class="md:col-span-4 relative">
-              <input type="text" id="mapSearchInput" oninput="renderMapAndPlaces()" placeholder="ค้นหาชื่อคลินิก, ถลาง, ฉลอง, Exotic, 24 ชม..." class="modern-input text-xs py-2 pl-8 bg-white dark:bg-slate-900">
+            <div class="md:col-span-5 relative">
+              <input type="text" id="mapSearchInput" oninput="renderMapAndPlaces()" placeholder="ค้นหาชื่อคลินิก, ถลาง, ฉลอง, กะทู้, Exotic, 24 ชม..." class="modern-input text-xs py-2 pl-8 bg-white dark:bg-slate-900">
               <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
             </div>
-            <div class="md:col-span-3 flex gap-1.5 overflow-x-auto hide-scroll">
+            <div class="md:col-span-3 flex gap-1.5 overflow-x-auto hide-scroll justify-start md:justify-end">
               <button onclick="setMapCategory('all')" id="mapCat-all" class="badge bg-slate-900 text-white dark:bg-white dark:text-slate-900 cursor-pointer shrink-0">ทั้งหมด</button>
               <button onclick="setMapCategory('emergency')" id="mapCat-emergency" class="badge bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 cursor-pointer shrink-0">🚨 24 ชม.</button>
               <button onclick="setMapCategory('clinic')" id="mapCat-clinic" class="badge bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 cursor-pointer shrink-0">🏥 คลินิก</button>
             </div>
           </div>
-
-          <!-- Map Mode Switcher (Interactive Street Map / Google Maps Live Embed / Island Schematic) -->
-          <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
-            <div class="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
-              <button onclick="switchMapDisplayMode('leaflet')" id="btnMapMode-leaflet" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm transition">
-                <i class="fa-solid fa-map"></i> แผนที่จริง (Interactive GPS)
-              </button>
-              <button onclick="switchMapDisplayMode('gmap')" id="btnMapMode-gmap" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-indigo-600 transition">
-                <i class="fa-brands fa-google"></i> Google Maps สด
-              </button>
-              <button onclick="switchMapDisplayMode('vector')" id="btnMapMode-vector" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-indigo-600 transition">
-                <i class="fa-solid fa-compass"></i> แผนผังโซนเกาะภูเก็ต
-              </button>
-            </div>
-
-            <div class="flex items-center gap-2">
-              <button onclick="toggleSatelliteLayer()" id="btnToggleSat" class="btn-secondary px-2.5 py-1 text-[11px]">
-                <i class="fa-solid fa-satellite"></i> ภาพดาวเทียม
-              </button>
-              <a id="btnOpenGoogleMapsArea" href="https://www.google.com/maps/search/?api=1&query=โรงพยาบาลสัตว์+ภูเก็ต" target="_blank" rel="noopener noreferrer" class="btn-primary px-3 py-1 text-[11px]">
-                <i class="fa-solid fa-up-right-from-square"></i> เปิดในแอป Google Maps
-              </a>
-            </div>
-          </div>
         </div>
 
-        <!-- MAP VIEWPORT CARD -->
-        <div class="modern-card overflow-hidden relative border-slate-200 dark:border-slate-700 shadow-md">
+        <!-- Split-Screen Map & Directory Container -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
           
-          <!-- 1. REAL INTERACTIVE LEAFLET MAP -->
-          <div id="leafletMapWrapper" class="relative w-full h-[380px] sm:h-[430px]">
-            <div id="realLeafletMap" class="w-full h-full z-10"></div>
-          </div>
+          <!-- Left Column (7 Cols on Desktop): Interactive Map & Route HUD -->
+          <div class="lg:col-span-7 modern-card overflow-hidden border-slate-200 dark:border-slate-700 shadow-md lg:sticky lg:top-2">
+            
+            <!-- Map Mode & Layer Toolbar -->
+            <div class="bg-white dark:bg-slate-900 px-3.5 py-2.5 border-b border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
+                <button onclick="switchMapDisplayMode('leaflet')" id="btnMapMode-leaflet" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm transition">
+                  <i class="fa-solid fa-map"></i> แผนที่จริง (Interactive GPS)
+                </button>
+                <button onclick="switchMapDisplayMode('gmap')" id="btnMapMode-gmap" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-indigo-600 transition">
+                  <i class="fa-brands fa-google"></i> Google Maps สด
+                </button>
+              </div>
 
-          <!-- 2. GOOGLE MAPS LIVE EMBED IFRAME -->
-          <div id="googleMapsEmbedWrapper" class="hidden relative w-full h-[380px] sm:h-[430px] bg-slate-100 dark:bg-slate-900">
-            <iframe id="googleMapsIframe" title="Google Maps Phuket Veterinary Clinics" class="w-full h-full border-0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Thonglor+Chalong+Phuket+Pet+Hospital&t=&z=13&ie=UTF8&iwloc=&output=embed"></iframe>
-          </div>
-
-          <!-- 3. PHUKET ISLAND VECTOR MAP ENGINE (Preserved & Synced) -->
-          <div id="vectorMapWrapper" class="hidden relative w-full h-[380px] sm:h-[430px] bg-[#E0F2FE] dark:bg-[#082F49]">
-            <div class="absolute top-2.5 left-2.5 z-20">
-              <div class="glass-header rounded-lg px-2.5 py-1 text-[10px] font-bold text-slate-800 dark:text-white shadow-sm flex items-center gap-1.5 border border-slate-200 dark:border-slate-600">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                <span id="mapZoneTitle">Phuket Island Radar</span>
+              <div class="flex items-center gap-1.5">
+                <button onclick="fitAllMarkersOnMap()" class="btn-secondary px-2.5 py-1 text-[11px]" title="แสดงหมุดทั้งหมดในรัศมี">
+                  <i class="fa-solid fa-expand"></i> ดูทั้งหมด
+                </button>
+                <button onclick="toggleSatelliteLayer()" id="btnToggleSat" class="btn-secondary px-2.5 py-1 text-[11px]">
+                  <i class="fa-solid fa-satellite"></i> ภาพดาวเทียม
+                </button>
+                <a id="btnOpenGoogleMapsArea" href="https://www.google.com/maps/search/?api=1&query=โรงพยาบาลสัตว์+ภูเก็ต" target="_blank" rel="noopener noreferrer" class="btn-primary px-2.5 py-1 text-[11px]">
+                  <i class="fa-solid fa-up-right-from-square"></i> แอป Google Maps
+                </a>
               </div>
             </div>
-            <div class="absolute top-2.5 right-2.5 z-20 flex flex-col gap-1">
-              <button onclick="zoomVectorMap(0.25)" class="w-7 h-7 rounded-lg glass-header text-slate-800 dark:text-white font-bold border border-slate-200 dark:border-slate-600 text-xs shadow-sm flex items-center justify-center hover:bg-white/50">+</button>
-              <button onclick="zoomVectorMap(-0.25)" class="w-7 h-7 rounded-lg glass-header text-slate-800 dark:text-white font-bold border border-slate-200 dark:border-slate-600 text-xs shadow-sm flex items-center justify-center hover:bg-white/50">−</button>
-              <button onclick="resetVectorMap()" class="w-7 h-7 rounded-lg bg-indigo-600 text-white font-bold text-xs shadow-sm flex items-center justify-center hover:bg-indigo-700">
-                <i class="fa-solid fa-crosshairs"></i>
-              </button>
+
+            <!-- 1. REAL INTERACTIVE LEAFLET MAP -->
+            <div id="leafletMapWrapper" class="relative w-full h-[380px] sm:h-[460px]">
+              <div id="realLeafletMap" class="w-full h-full z-10"></div>
             </div>
 
-            <div id="vectorMapContainer" class="w-full h-full overflow-hidden cursor-grab active:cursor-grabbing relative select-none"
-                 onmousedown="startMapDrag(event)" onmousemove="moveMapDrag(event)" onmouseup="endMapDrag()" onmouseleave="endMapDrag()"
-                 ontouchstart="startMapTouch(event)" ontouchmove="moveMapTouch(event)" ontouchend="endMapDrag()">
-              <svg id="interactiveMapSVG" viewBox="0 0 800 1200" class="w-full h-full">
-                <g id="mapPanZoomGroup" transform="translate(0,0) scale(1)">
-                  <rect x="-400" y="-400" width="1600" height="2000" fill="transparent" />
-                  <g filter="drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.15))">
-                    <path d="M 380 0 L 420 0 L 420 45 L 380 45 Z" fill="#CBD5E1" stroke="#94A3B8" stroke-width="2"/>
-                    <path d="M 400 50 C 380 150, 420 250, 450 300 C 480 350, 520 400, 500 450 C 480 500, 550 600, 600 650 C 620 680, 580 750, 550 850 C 520 950, 450 850, 400 950 C 380 1000, 350 1050, 350 1050 C 320 1000, 300 950, 300 950 C 280 850, 290 800, 290 800 C 270 700, 280 650, 280 650 C 270 600, 280 550, 280 550 C 290 450, 300 400, 300 400 C 320 300, 350 200, 350 200 C 380 150, 390 100, 400 50 Z" fill="#F1F5F9" stroke="#94A3B8" stroke-width="4" stroke-linejoin="round" />
-                  </g>
-                  <path d="M 380 200 Q 450 250, 420 350 T 350 280 Z" fill="#DCFCE7" opacity="0.8"/>
-                  <path d="M 300 550 Q 380 600, 350 750 T 290 700 Z" fill="#DCFCE7" opacity="0.8"/>
-                  <path d="M 330 850 Q 400 880, 380 950 T 320 900 Z" fill="#DCFCE7" opacity="0.8"/>
-                  <g stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M 400 50 L 400 300 L 420 400 L 450 550 L 500 650" fill="none" stroke="#94A3B8" stroke-width="14"/>
-                    <path d="M 400 50 L 400 300 L 420 400 L 450 550 L 500 650" fill="none" stroke="#F8FAFC" stroke-width="8"/>
-                    <path d="M 450 550 L 400 700 L 400 850 L 350 980" fill="none" stroke="#94A3B8" stroke-width="12"/>
-                    <path d="M 450 550 L 400 700 L 400 850 L 350 980" fill="none" stroke="#F8FAFC" stroke-width="6"/>
-                    <path d="M 450 600 L 350 600 L 280 650" fill="none" stroke="#94A3B8" stroke-width="10"/>
-                    <path d="M 450 600 L 350 600 L 280 650" fill="none" stroke="#F8FAFC" stroke-width="5"/>
-                    <path d="M 420 400 L 300 400" fill="none" stroke="#94A3B8" stroke-width="8"/>
-                    <path d="M 420 400 L 300 400" fill="none" stroke="#F8FAFC" stroke-width="4"/>
-                  </g>
-                  <text x="420" y="250" font-size="14" font-weight="bold" fill="#64748B" opacity="0.6">อ. ถลาง</text>
-                  <text x="360" y="580" font-size="14" font-weight="bold" fill="#64748B" opacity="0.6">อ. กะทู้</text>
-                  <text x="450" y="750" font-size="14" font-weight="bold" fill="#64748B" opacity="0.6">อ. เมือง</text>
-                  <circle id="svgRadarCircle" cx="450" cy="550" r="375" fill="#4F46E5" fill-opacity="0.08" stroke="#4F46E5" stroke-width="2" stroke-dasharray="8,6" />
-                  <g id="svgRouteLayer"></g>
-                  <g id="userGpsMarker" transform="translate(450, 550)">
-                    <circle cx="0" cy="0" r="12" fill="#4F46E5" class="gps-pulse" />
-                    <circle cx="0" cy="0" r="8" fill="#4F46E5" stroke="#FFFFFF" stroke-width="3" />
-                    <rect x="-40" y="16" width="80" height="18" rx="6" fill="#0F172A" />
-                    <text x="0" y="29" text-anchor="middle" font-size="10" font-weight="bold" fill="#FFFFFF">คุณอยู่ที่นี่</text>
-                  </g>
-                  <g id="svgPinsLayer"></g>
-                </g>
-              </svg>
+            <!-- 2. GOOGLE MAPS LIVE EMBED IFRAME -->
+            <div id="googleMapsEmbedWrapper" class="hidden relative w-full h-[380px] sm:h-[460px] bg-slate-100 dark:bg-slate-900">
+              <iframe id="googleMapsIframe" title="Google Maps Phuket Veterinary Clinics" class="w-full h-full border-0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Thonglor+Chalong+Phuket+Pet+Hospital&t=&z=13&ie=UTF8&iwloc=&output=embed"></iframe>
+            </div>
+
+            <!-- Active Route & Status Footer Bar -->
+            <div id="activeRouteBanner" class="bg-slate-900 text-white px-4 py-3 text-xs flex flex-wrap items-center justify-between gap-2">
+              <div id="routeInfoText" class="truncate font-medium text-slate-200">
+                🟢 แสดงสถานพยาบาลในรัศมี <span class="text-indigo-300 font-bold">25 กม.</span>
+              </div>
+              <div class="flex items-center gap-2.5">
+                <a id="btnDirectGoogleNav" href="https://www.google.com/maps/dir/?api=1&destination=7.8485,98.3392" target="_blank" rel="noopener noreferrer" class="hidden bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded-lg font-semibold text-[11px] transition flex items-center gap-1.5">
+                  <i class="fa-solid fa-diamond-turn-right"></i> นำทางด้วย Google Maps
+                </a>
+                <button onclick="clearSelectedPlaceRoute()" id="btnClearRoute" class="hidden text-rose-400 font-bold hover:underline shrink-0">ปิด ✕</button>
+              </div>
             </div>
           </div>
 
-          <!-- Active Route & Status Footer Bar -->
-          <div id="activeRouteBanner" class="bg-slate-900 text-white px-4 py-3 text-xs flex flex-wrap items-center justify-between gap-2">
-            <div id="routeInfoText" class="truncate font-medium text-slate-200">
-              🟢 แสดงสถานพยาบาลในรัศมี <span class="text-indigo-300 font-bold">25 กม.</span>
-            </div>
-            <div class="flex items-center gap-3">
-              <a id="btnDirectGoogleNav" href="https://www.google.com/maps/dir/?api=1&destination=7.8485,98.3392" target="_blank" rel="noopener noreferrer" class="hidden bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded-lg font-semibold text-[11px] transition flex items-center gap-1.5">
-                <i class="fa-solid fa-diamond-turn-right"></i> นำทางด้วย Google Maps
-              </a>
-              <button onclick="clearSelectedPlaceRoute()" id="btnClearRoute" class="hidden text-rose-400 font-bold hover:underline shrink-0">ปิด ✕</button>
-            </div>
+          <!-- Right Column (5 Cols on Desktop): Scrollable Clinic Cards List -->
+          <div class="lg:col-span-5 space-y-2.5 lg:max-h-[565px] lg:overflow-y-auto thin-scroll pr-0.5" id="placesListContainer">
+            <!-- Populated by JS -->
           </div>
-        </div>
-
-        <!-- Clinic Cards Grid -->
-        <div id="placesListContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3 pb-6">
-          <!-- Populated by JS -->
         </div>
       </div>
 
@@ -847,9 +866,9 @@
   </main>
 
   <!-- ==================== BOTTOM NAVIGATION BAR ==================== -->
-  <nav class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 px-2 py-1.5 shrink-0 z-30 shadow-lg">
+  <nav class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 px-2 py-1.5 shrink-0 z-30 shadow-lg">
     <div class="max-w-xl mx-auto grid grid-cols-5 gap-1">
-      <button onclick="switchTab('dashboard')" id="nav-dashboard" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-indigo-600 dark:text-indigo-400 font-semibold bg-indigo-50/70 dark:bg-indigo-950/40 transition">
+      <button onclick="switchTab('dashboard')" id="nav-dashboard" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-indigo-600 dark:text-indigo-400 font-semibold bg-indigo-50/80 dark:bg-indigo-950/50 transition">
         <i class="fa-solid fa-calendar-check text-[17px]"></i>
         <span class="text-[10px] font-medium mt-1">หน้าหลัก</span>
       </button>
@@ -940,6 +959,25 @@
     </div>
   </div>
 
+  <!-- Digital Pet Passport Certificate Modal -->
+  <div id="healthPassportModal" class="hidden fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="modern-card max-w-md w-full p-5 bg-white dark:bg-slate-900 relative animate-fade-up space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-passport text-indigo-600 text-lg"></i>
+          <h3 class="text-sm font-bold text-slate-900 dark:text-white">บัตรรับรองสุขภาพและวัคซีนดิจิทัล</h3>
+        </div>
+        <button onclick="closeHealthPassportModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <div id="healthPassportContent" class="space-y-3 text-xs">
+        <!-- Populated by JS -->
+      </div>
+      <div class="pt-2 flex justify-end">
+        <button onclick="closeHealthPassportModal()" class="btn-primary px-5 py-2 text-xs">ปิดหน้าต่าง</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Delete Modal -->
   <div id="deletePetModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="modern-card max-w-xs w-full p-5 text-center space-y-3 animate-fade-up">
@@ -972,7 +1010,7 @@
 
   <!-- Live Alarm Modal -->
   <div id="liveAlarmModal" class="hidden fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="modern-card max-w-xs w-full p-5 text-center space-y-4 animate-slide-down border-2 border-rose-500">
+    <div class="modern-card max-w-xs w-full p-5 text-center space-y-4 animate-fade-up border-2 border-rose-500">
       <div class="w-14 h-14 mx-auto rounded-full bg-rose-100 dark:bg-rose-900/50 text-rose-600 dark:text-rose-400 flex items-center justify-center text-2xl animate-bounce">
         <i class="fa-solid fa-bell"></i>
       </div>
@@ -1163,6 +1201,7 @@
     let activePetId = null;
     let currentTab = 'dashboard';
     let taskFilter = 'all';
+    let expenseFilter = 'all';
 
     function loadState() {
       const theme = safeGetStorage('pethelper_theme');
@@ -1195,7 +1234,7 @@
     }
 
     // =========================================================================
-    // 2. UI RENDERING (PET HEADER, DASHBOARD, HEALTH BOOK, EXPENSES, AI)
+    // 2. UI RENDERING (UNIFIED PET BAR, DASHBOARD, HEALTH BOOK, EXPENSES)
     // =========================================================================
     function renderPetHeader() {
       const selector = document.getElementById('petSelectorList');
@@ -1207,9 +1246,8 @@
         if (editBtnTop) editBtnTop.classList.add('hidden');
         selector.innerHTML = '';
         summary.innerHTML = `
-          <div class="max-w-5xl mx-auto flex items-center justify-between py-1">
-            <span class="text-xs text-slate-500 dark:text-slate-400">ยังไม่มีโปรไฟล์สัตว์เลี้ยงในระบบ</span>
-            <button onclick="openPetFormModal('add')" class="btn-primary px-3 py-1 text-xs"><i class="fa-solid fa-plus"></i> สร้างโปรไฟล์แรก</button>
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-slate-500 dark:text-slate-400">ยังไม่มีโปรไฟล์สัตว์เลี้ยง</span>
           </div>
         `;
         return;
@@ -1220,39 +1258,28 @@
       selector.innerHTML = pets.map(p => {
         const isSel = p.id === activePet.id;
         return `
-          <button onclick="selectPet('${p.id}')" class="px-3.5 py-1.5 rounded-xl border text-xs font-medium flex items-center gap-2 transition-all shrink-0 ${isSel ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm' : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-indigo-300'}">
+          <button onclick="selectPet('${p.id}')" class="px-3 py-1 rounded-xl border text-xs font-medium flex items-center gap-1.5 transition-all shrink-0 ${isSel ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm' : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-indigo-300'}">
             <i class="fa-solid ${p.iconClass || 'fa-paw'} ${isSel ? 'text-amber-300' : 'text-indigo-500 dark:text-indigo-400'}"></i>
             <span>${p.name}</span>
-            <span class="text-[10px] opacity-80">(${p.speciesLabel})</span>
           </button>
         `;
       }).join('');
 
       summary.innerHTML = `
-        <div class="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-2">
-          <div class="flex items-center gap-3">
-            <div class="w-11 h-11 rounded-2xl bg-indigo-50 dark:bg-indigo-900/50 border border-indigo-200/80 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-lg shrink-0 shadow-sm">
-              <i class="fa-solid ${activePet.iconClass || 'fa-paw'}"></i>
-            </div>
-            <div>
-              <div class="flex flex-wrap items-center gap-1.5">
-                <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white leading-none">${activePet.name}</h3>
-                <span class="badge bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 text-[10px]">${activePet.breed}</span>
-                <span class="badge bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px]">${activePet.gender || 'ไม่ระบุ'}</span>
-              </div>
-              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                ${activePet.speciesLabel} • อายุ ${activePet.age} • น้ำหนัก <strong>${activePet.weight} กก.</strong> • แพ้ยา/อาหาร: <span class="text-rose-600 dark:text-rose-400 font-medium">${activePet.allergy || 'ไม่มี'}</span>
-              </p>
-            </div>
+        <div class="flex flex-wrap items-center gap-2 bg-slate-50 dark:bg-slate-800/80 px-3 py-1.5 rounded-xl border border-slate-200/80 dark:border-slate-700">
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-xs text-indigo-600 dark:text-indigo-400">${activePet.name}</span>
+            <span class="text-[11px] text-slate-600 dark:text-slate-300 font-medium">${activePet.breed}</span>
           </div>
-          <div class="flex items-center gap-1.5">
-            <button onclick="openPetFormModal('edit')" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-indigo-50 dark:bg-slate-800 dark:hover:bg-indigo-900/40 text-slate-600 hover:text-indigo-600 dark:text-slate-300 flex items-center justify-center text-xs transition" title="แก้ไขโปรไฟล์">
-              <i class="fa-solid fa-pen"></i>
-            </button>
-            <button onclick="openDeletePetModal()" class="w-8 h-8 rounded-xl bg-rose-50 hover:bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 flex items-center justify-center text-xs transition" title="ลบโปรไฟล์">
-              <i class="fa-solid fa-trash-can"></i>
-            </button>
-          </div>
+          <span class="text-slate-300 dark:text-slate-600">•</span>
+          <span class="text-[11px] text-slate-500 dark:text-slate-400">${activePet.age}</span>
+          <span class="text-slate-300 dark:text-slate-600">•</span>
+          <span class="text-[11px] font-semibold text-slate-700 dark:text-slate-200">${activePet.weight} กก.</span>
+          <span class="text-slate-300 dark:text-slate-600 hidden sm:inline">•</span>
+          <span class="text-[11px] text-rose-600 dark:text-rose-400 hidden sm:inline"><i class="fa-solid fa-notes-medical mr-1"></i>${activePet.allergy || 'ไม่มีแพ้ยา'}</span>
+          <button onclick="openDeletePetModal()" class="ml-1 text-slate-400 hover:text-rose-500 text-xs px-1" title="ลบโปรไฟล์">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
         </div>
       `;
     }
@@ -1270,7 +1297,7 @@
         document.getElementById('tab-' + t).classList.toggle('hidden', t !== tab);
         const nav = document.getElementById('nav-' + t);
         if (t === tab) {
-          nav.className = 'flex flex-col items-center justify-center py-1.5 rounded-xl text-indigo-600 dark:text-indigo-400 font-semibold bg-indigo-50/70 dark:bg-indigo-950/40 transition';
+          nav.className = 'flex flex-col items-center justify-center py-1.5 rounded-xl text-indigo-600 dark:text-indigo-400 font-semibold bg-indigo-50/80 dark:bg-indigo-950/50 transition';
         } else {
           nav.className = 'flex flex-col items-center justify-center py-1.5 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition';
         }
@@ -1284,6 +1311,12 @@
       if (tab === 'ai') {
         fillAIFromActivePet();
       }
+    }
+
+    function fillQuickReminderTemplate(title, category) {
+      document.getElementById('remTitle').value = title;
+      document.getElementById('remCategory').value = category;
+      showToast('กรอกเทมเพลตอัตโนมัติแล้ว เลือกเวลาและกดบันทึกได้เลย');
     }
 
     const remCatMeta = {
@@ -1392,11 +1425,58 @@
                 </button>
                 ${!isComp ? `<button onclick="syncVaccineToReminder('${v.id}')" class="btn-primary px-2.5 py-1 text-[11px]"><i class="fa-solid fa-bell"></i> ส่งเข้าแจ้งเตือน</button>` : ''}
               </div>
-              <button onclick="deleteVaccine('${v.id}')" class="text-xs text-rose-500 hover:underline px-2 py-1"><i class="fa-solid fa-trash-can"></i> ลบ</button>
+              <button onclick="deleteVaccine('${v.id}')" class="text-xs text-rose-500 hover:underline px-2 py-1">ลบ</button>
             </div>
           </div>
         `;
       }).join('');
+    }
+
+    function openHealthPassportModal() {
+      const p = getActivePet();
+      if (!p) return;
+      const modal = document.getElementById('healthPassportModal');
+      const content = document.getElementById('healthPassportContent');
+      const compCount = (p.vaccines || []).filter(v => v.status === 'completed').length;
+      content.innerHTML = `
+        <div class="p-4 rounded-2xl bg-gradient-to-br from-slate-900 to-indigo-950 text-white space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="badge bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[10px]">PHUKET DIGITAL PET PASSPORT</span>
+            <span class="font-mono text-[11px] text-indigo-300">ID: ${p.id.toUpperCase()}</span>
+          </div>
+          <div class="flex items-center gap-3 pt-1">
+            <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-xl text-amber-300">
+              <i class="fa-solid ${p.iconClass || 'fa-paw'}"></i>
+            </div>
+            <div>
+              <div class="text-base font-bold">${p.name} (${p.speciesLabel})</div>
+              <div class="text-xs text-slate-300">${p.breed} • ${p.gender} • ${p.age} • ${p.weight} กก.</div>
+            </div>
+          </div>
+          <div class="pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-300">
+            <span>แพ้ยา/อาหาร: <strong class="text-rose-300">${p.allergy || 'ไม่มี'}</strong></span>
+            <span>วัคซีนที่ฉีดแล้ว: <strong class="text-emerald-300">${compCount} รายการ</strong></span>
+          </div>
+        </div>
+        <div class="space-y-2 max-h-52 overflow-y-auto thin-scroll">
+          ${(p.vaccines || []).map(v => `
+            <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+              <div>
+                <div class="font-bold text-slate-900 dark:text-white">${v.name}</div>
+                <div class="text-[11px] text-slate-500">${v.clinic || '-'} • Lot: ${v.lot || '-'}</div>
+              </div>
+              <span class="badge ${v.status==='completed'?'bg-emerald-50 text-emerald-700':'bg-amber-50 text-amber-700'} text-[10px]">
+                ${v.date}
+              </span>
+            </div>
+          `).join('') || '<div class="text-center text-slate-400 py-3">ยังไม่มีรายการวัคซีน</div>'}
+        </div>
+      `;
+      modal.classList.remove('hidden');
+    }
+
+    function closeHealthPassportModal() {
+      document.getElementById('healthPassportModal').classList.add('hidden');
     }
 
     function toggleVaccineStatus(id) {
@@ -1430,13 +1510,26 @@
       showToast('เพิ่มนัดฉีดวัคซีนเข้าหน้าหลักแล้ว');
     }
 
+    function setExpenseFilter(f) {
+      expenseFilter = f;
+      ['all','food','medical','grooming','toys','other'].forEach(x => {
+        const b = document.getElementById('expFilter-' + x);
+        if (b) {
+          b.className = (x === f)
+            ? 'badge bg-slate-900 text-white dark:bg-white dark:text-slate-900 cursor-pointer shrink-0'
+            : 'badge bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 cursor-pointer shrink-0';
+        }
+      });
+      renderExpenses();
+    }
+
     function renderExpenses() {
       const pet = getActivePet();
       const listEl = document.getElementById('expenseListContainer');
       const barEl = document.getElementById('expenseBreakdownBar');
       if (!pet) {
         document.getElementById('expenseTotalAmount').textContent = '0';
-        listEl.innerHTML = `<div class="modern-card p-5 text-center text-xs text-slate-500">กรุณาเลือกสัตว์เลี้ยง</div>`;
+        listEl.innerHTML = `<div class="modern-card p-5 text-center text-xs text-slate-500 col-span-full">กรุณาเลือกสัตว์เลี้ยง</div>`;
         return;
       }
       if (!pet.expenses) pet.expenses = [];
@@ -1479,8 +1572,12 @@
         }
       }
 
-      if (!pet.expenses.length) {
-        listEl.innerHTML = `<div class="modern-card p-6 text-center text-xs text-slate-500">ยังไม่มีรายการค่าใช้จ่าย</div>`;
+      const filteredExp = expenseFilter === 'all'
+        ? pet.expenses
+        : pet.expenses.filter(e => e.category === expenseFilter);
+
+      if (!filteredExp.length) {
+        listEl.innerHTML = `<div class="modern-card p-6 text-center text-xs text-slate-500 col-span-full">ไม่มีรายการค่าใช้จ่ายในหมวดนี้</div>`;
         return;
       }
 
@@ -1492,7 +1589,7 @@
         other: { label: 'อื่นๆ', icon: 'fa-box', color: 'text-slate-600 dark:text-slate-400', bg: 'bg-slate-100 dark:bg-slate-800' }
       };
 
-      listEl.innerHTML = pet.expenses.slice().sort((a,b)=>new Date(b.date)-new Date(a.date)).map(e => {
+      listEl.innerHTML = filteredExp.slice().sort((a,b)=>new Date(b.date)-new Date(a.date)).map(e => {
         const m = catMeta[e.category] || catMeta.other;
         return `
           <div class="modern-card p-3.5 flex items-center justify-between">
@@ -1507,7 +1604,7 @@
             </div>
             <div class="text-right flex items-center gap-3">
               <div class="font-bold text-sm sm:text-base text-slate-900 dark:text-white">${parseFloat(e.amount).toLocaleString()} ฿</div>
-              <button onclick="deleteExpense('${e.id}')" class="text-xs text-slate-400 hover:text-rose-500 p-1.5"><i class="fa-solid fa-trash-can"></i></button>
+              <button onclick="deleteExpense('${e.id}')" class="text-xs text-rose-500 hover:underline p-1">ลบ</button>
             </div>
           </div>
         `;
@@ -1560,24 +1657,23 @@
       const w = Math.max(0.1, parseFloat(document.getElementById('aiWeight').value) || 5);
       const cond = document.getElementById('aiCondition').value;
 
-      // RER = 70 * (weight_kg ^ 0.75)
       const rer = Math.round(70 * Math.pow(w, 0.75));
       let factor = 1.6;
       let mealsPerDay = 2;
-      let careTip = 'ควรแบ่งมื้ออาหารเป็นเช้า-เย็นในปริมาณเท่ากัน และพาเดินออกกำลังกายอย่างน้อยวันละ 30 นาที';
+      let careTip = 'ควรแบ่งมื้ออาหารเป็นเช้า (08:00 น.) และเย็น (18:00 น.) ในปริมาณเท่ากัน พร้อมพาเดินออกกำลังกายวันละ 25-30 นาที';
 
       if (cond === 'ทำหมันแล้ว/ควบคุมน้ำหนัก') {
         factor = 1.3;
         mealsPerDay = 2;
-        careTip = 'สัตว์เลี้ยงทำหมันแล้วมีอัตราการเผาผลาญลดลง ควรเลือกสูตรไขมันต่ำ (Light / Sterilised) และงดขนมที่มีโซเดียมสูง';
+        careTip = 'สัตว์เลี้ยงทำหมันแล้วมีอัตราการเผาผลาญลดลง ควรเลือกสูตรไขมันต่ำ (Sterilised / Weight Care) และคุมปริมาณขนมไม่เกิน 10% ของพลังงานต่อวัน';
       } else if (cond === 'ลูกสัตว์วัยเด็ก') {
         factor = 2.2;
         mealsPerDay = 3;
-        careTip = 'วัยกำลังเจริญเติบโตต้องการโปรตีนและแคลเซียมสูง ควรแบ่งอาหารเป็น 3 มื้อ (เช้า-กลางวัน-เย็น) และตรวจโปรแกรมวัคซีนให้ครบ';
+        careTip = 'วัยกำลังเจริญเติบโตต้องการโปรตีนและแคลเซียมสูง ควรแบ่งอาหารเป็น 3 มื้อ (เช้า-เที่ยง-เย็น) และตรวจโปรแกรมวัคซีนตามกำหนด';
       } else if (cond === 'สูงวัย/พักฟื้น') {
         factor = 1.2;
         mealsPerDay = 3;
-        careTip = 'เน้นอาหารย่อยง่าย เสริมบำรุงข้อต่อ (Glucosamine / Omega-3) และตรวจสุขภาพเลือดทุก 6 เดือน';
+        careTip = 'เน้นอาหารย่อยง่าย โปรตีนคุณภาพดี เสริมบำรุงข้อต่อ (Glucosamine / Omega-3) และตรวจสุขภาพเลือดทุก 6 เดือน';
       }
 
       if (typeStr.includes('แมว')) {
@@ -1680,11 +1776,11 @@
     // 4. REAL INTERACTIVE MAP (LEAFLET + ARCGIS + GOOGLE MAPS LIVE & NAVIGATION)
     // =========================================================================
     const gpsZones = {
-      all: { label: 'เกาะภูเก็ต (จุดกึ่งกลาง)', lat: 7.8906, lng: 98.3650, cx: 450, cy: 550, zoom: 11 },
-      thalang: { label: 'โซนถลาง - เชิงทะเล', lat: 8.0317, lng: 98.3330, cx: 400, cy: 250, zoom: 12 },
-      patong: { label: 'โซนกะทู้ - ป่าตอง', lat: 7.8961, lng: 98.2966, cx: 280, cy: 650, zoom: 13 },
-      phuket_town: { label: 'โซนเมืองภูเก็ต - วิชิต', lat: 7.8906, lng: 98.3981, cx: 500, cy: 650, zoom: 13 },
-      chalong: { label: 'โซนฉลอง - ราไวย์', lat: 7.8397, lng: 98.3453, cx: 400, cy: 850, zoom: 13 }
+      all: { label: 'เกาะภูเก็ต (จุดกึ่งกลาง)', lat: 7.8906, lng: 98.3650, zoom: 11 },
+      thalang: { label: 'โซนถลาง - เชิงทะเล', lat: 8.0317, lng: 98.3330, zoom: 12 },
+      patong: { label: 'โซนกะทู้ - ป่าตอง', lat: 7.8961, lng: 98.2966, zoom: 13 },
+      phuket_town: { label: 'โซนเมืองภูเก็ต - วิชิต', lat: 7.8906, lng: 98.3981, zoom: 13 },
+      chalong: { label: 'โซนฉลอง - ราไวย์', lat: 7.8397, lng: 98.3453, zoom: 13 }
     };
 
     let currentGPSZone = 'all';
@@ -1693,8 +1789,7 @@
     let mapRadiusKm = 25;
     let mapCategory = 'all';
     let selectedPlaceId = null;
-    let mapDisplayMode = 'leaflet'; // 'leaflet' | 'gmap' | 'vector'
-    let mapScale = 1, mapPanX = 0, mapPanY = 0, isDraggingMap = false, dragStartX = 0, dragStartY = 0;
+    let mapDisplayMode = 'leaflet'; // 'leaflet' | 'gmap'
 
     // Leaflet state
     let leafletMap = null;
@@ -1711,11 +1806,10 @@
       {
         id: 'pl1',
         name: 'โรงพยาบาลสัตว์ทองหล่อ ภูเก็ต (Thonglor Pet Hospital)',
+        shortName: 'รพ.สัตว์ทองหล่อ (24ชม.)',
         category: 'emergency',
         lat: 7.8485,
         lng: 98.3392,
-        svgX: 450,
-        svgY: 550,
         phone: '081-895-3277',
         hours: 'เปิด 24 ชั่วโมง (ทุกวัน)',
         rating: '4.6 ⭐ (536 รีวิว)',
@@ -1726,11 +1820,10 @@
       {
         id: 'pl2',
         name: 'มูลนิธิเพื่อสุนัขในซอย (Soi Dog Foundation - ไม้ขาว)',
+        shortName: 'Soi Dog ไม้ขาว',
         category: 'emergency',
         lat: 8.1287,
         lng: 98.3060,
-        svgX: 390,
-        svgY: 100,
         phone: '076-681-029',
         hours: 'จันทร์–ศุกร์ 08:00–17:00 น.',
         rating: '4.9 ⭐ (1,424 รีวิว)',
@@ -1741,11 +1834,10 @@
       {
         id: 'pl3',
         name: 'Aura Pets International Animal Hospital & Spa (เชิงทะเล)',
+        shortName: 'Aura Pets เชิงทะเล',
         category: 'emergency',
         lat: 7.9929,
         lng: 98.3097,
-        svgX: 310,
-        svgY: 350,
         phone: '065-141-6964',
         hours: 'ทุกวัน 09:00–00:00 น. (เที่ยงคืน)',
         rating: '4.9 ⭐ (115 รีวิว)',
@@ -1756,11 +1848,10 @@
       {
         id: 'pl4',
         name: 'รักษาสัตว์ The Zoo Exotic Pet Clinic Phuket (กะทู้)',
+        shortName: 'The Zoo Exotic กะทู้',
         category: 'emergency',
         lat: 7.9052,
         lng: 98.3425,
-        svgX: 350,
-        svgY: 570,
         phone: '093-669-5453',
         hours: 'ทุกวัน 08:00–00:00 น. (รับสัตว์ Exotic & ฉุกเฉิน)',
         rating: '5.0 ⭐ (29 รีวิว)',
@@ -1771,11 +1862,10 @@
       {
         id: 'pl5',
         name: 'Naka Animal Hospital (โรงพยาบาลสัตว์นาคา - วิชิต)',
+        shortName: 'รพ.สัตว์นาคา',
         category: 'emergency',
         lat: 7.8765,
         lng: 98.3682,
-        svgX: 430,
-        svgY: 630,
         phone: '082-665-5461',
         hours: 'ทุกวัน 09:00–23:00 น. (ห้องฉุกเฉิน & Exotic)',
         rating: '4.8 ⭐ (219 รีวิว)',
@@ -1786,11 +1876,10 @@
       {
         id: 'pl6',
         name: 'RTB Animal Hospital (วิชิต - เมืองภูเก็ต)',
+        shortName: 'RTB วิชิต',
         category: 'emergency',
         lat: 7.8680,
         lng: 98.3610,
-        svgX: 440,
-        svgY: 670,
         phone: '076-213-464',
         hours: 'ทุกวัน 07:00–23:00 น.',
         rating: '4.2 ⭐ (282 รีวิว)',
@@ -1801,11 +1890,10 @@
       {
         id: 'pl7',
         name: 'โรงพยาบาลสัตว์ถลาง (Thalang Animal Hospital)',
+        shortName: 'รพ.สัตว์ถลาง',
         category: 'clinic',
         lat: 8.0317,
         lng: 98.3330,
-        svgX: 400,
-        svgY: 300,
         phone: '086-682-2557',
         hours: 'จันทร์–เสาร์ 08:00–19:00 น.',
         rating: '4.7 ⭐ (282 รีวิว)',
@@ -1816,11 +1904,10 @@
       {
         id: 'pl8',
         name: 'คลินิกรักษาสัตว์ลายัน (Layan Vet Clinic - ถลาง)',
+        shortName: 'คลินิกลายัน',
         category: 'clinic',
         lat: 8.0125,
         lng: 98.3080,
-        svgX: 320,
-        svgY: 320,
         phone: '081-416-6101',
         hours: 'ทุกวัน 09:00–19:00 น.',
         rating: '4.9 ⭐ (137 รีวิว)',
@@ -1831,11 +1918,10 @@
       {
         id: 'pl9',
         name: 'Happy Paws Pet Hospital (โรงพยาบาลสัตว์แฮปปี้พอวว์)',
+        shortName: 'Happy Paws ถลาง',
         category: 'clinic',
         lat: 7.9840,
         lng: 98.3510,
-        svgX: 420,
-        svgY: 390,
         phone: '083-686-4142',
         hours: 'ทุกวัน 09:00–20:30 น.',
         rating: '4.7 ⭐ (186 รีวิว)',
@@ -1846,11 +1932,10 @@
       {
         id: 'pl10',
         name: 'คลินิกรักษาสัตว์หมอมด (Mor Mod Vet Clinic - เชิงทะเล)',
+        shortName: 'คลินิกหมอมด',
         category: 'clinic',
         lat: 7.9984,
         lng: 98.2983,
-        svgX: 300,
-        svgY: 400,
         phone: '090-932-9351',
         hours: 'เสาร์–พฤหัสบดี 09:00–17:00 น.',
         rating: '4.8 ⭐ (97 รีวิว)',
@@ -1861,11 +1946,10 @@
       {
         id: 'pl11',
         name: 'โรงพยาบาลสัตว์กะทู้ (Kathu Animal Hospital)',
+        shortName: 'รพ.สัตว์กะทู้',
         category: 'clinic',
         lat: 7.9178,
         lng: 98.3332,
-        svgX: 350,
-        svgY: 600,
         phone: '076-319-526',
         hours: 'ทุกวัน 08:30–19:30 น.',
         rating: '4.5 ⭐ (269 รีวิว)',
@@ -1876,11 +1960,10 @@
       {
         id: 'pl12',
         name: 'โรงพยาบาลสัตว์ไอรักษ์เพ็ทภูเก็ต (I RAK PET Hospital)',
+        shortName: 'ไอรักษ์เพ็ท',
         category: 'clinic',
         lat: 7.8732,
         lng: 98.3815,
-        svgX: 480,
-        svgY: 620,
         phone: '092-444-0424',
         hours: 'ทุกวัน 09:00–22:00 น.',
         rating: '4.7 ⭐ (314 รีวิว)',
@@ -1891,11 +1974,10 @@
       {
         id: 'pl13',
         name: 'โรงพยาบาลสัตว์แม่หลวนภูเก็ต (Maeluan Animal Hospital)',
+        shortName: 'รพ.สัตว์แม่หลวน',
         category: 'clinic',
         lat: 7.8895,
         lng: 98.3812,
-        svgX: 500,
-        svgY: 600,
         phone: '095-278-0789',
         hours: 'ทุกวัน 08:30–20:30 น.',
         rating: '4.6 ⭐ (316 รีวิว)',
@@ -1906,11 +1988,10 @@
       {
         id: 'pl14',
         name: 'โรงพยาบาลสัตว์เจ้าฟ้าอันดามัน (Chaofa Andaman Pet Hospital)',
+        shortName: 'เจ้าฟ้าอันดามัน',
         category: 'clinic',
         lat: 7.8397,
         lng: 98.3453,
-        svgX: 420,
-        svgY: 750,
         phone: '076-384-365',
         hours: 'ทุกวัน 09:00–19:00 น.',
         rating: '4.4 ⭐ (259 รีวิว)',
@@ -1921,11 +2002,10 @@
       {
         id: 'pl15',
         name: 'โรงพยาบาลสัตว์แอนิเวิลด์ภูเก็ต (Aniworld Pet Hospital - ฉลอง)',
+        shortName: 'แอนิเวิลด์ ฉลอง',
         category: 'clinic',
         lat: 7.8320,
         lng: 98.3380,
-        svgX: 400,
-        svgY: 850,
         phone: '093-717-1888',
         hours: 'ทุกวัน 08:00–20:00 น.',
         rating: '4.9 ⭐ (60 รีวิว)',
@@ -1936,11 +2016,10 @@
       {
         id: 'pl16',
         name: 'โรงพยาบาลสัตว์เว็ทเมดภูเก็ต (Vetmed Animal Hospital - ราไวย์)',
+        shortName: 'เว็ทเมด ราไวย์',
         category: 'clinic',
         lat: 7.7797,
         lng: 98.3253,
-        svgX: 350,
-        svgY: 980,
         phone: '083-949-1664',
         hours: 'ทุกวัน 09:00–19:00 น.',
         rating: '4.6 ⭐ (118 รีวิว)',
@@ -1959,6 +2038,10 @@
                 Math.sin(dLon/2) * Math.sin(dLon/2);
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
       return R * c;
+    }
+
+    function estimateDriveMinutes(distKm) {
+      return Math.max(3, Math.round(distKm * 2.1));
     }
 
     function buildGoogleMapsNavUrl(place) {
@@ -1981,7 +2064,7 @@
 
         streetTileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
           maxZoom: 19,
-          attribution: 'Tiles &copy; Esri &mdash; Source: Esri, TomTom, Garmin, FAO, NOAA, USGS'
+          attribution: 'Tiles &copy; Esri &mdash; Source: Esri, TomTom, Garmin, USGS'
         }).addTo(leafletMap);
 
         satelliteTileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
@@ -1993,6 +2076,57 @@
       } else {
         leafletMap.invalidateSize();
       }
+    }
+
+    function fitAllMarkersOnMap() {
+      if (!leafletMap) return;
+      switchMapDisplayMode('leaflet');
+      selectedPlaceId = null;
+      const z = gpsZones[currentGPSZone] || gpsZones.all;
+      leafletMap.setView([userLat, userLng], z.zoom || 11, { animate: true });
+      renderMapAndPlaces();
+      showToast('🗺️ ปรับมุมมองแผนที่แสดงทุกคลินิกในรัศมี');
+    }
+
+    function findNearestEmergencyVet() {
+      let nearest = null;
+      let minDist = Infinity;
+      mapPlaces.filter(p => p.category === 'emergency').forEach(p => {
+        const d = calcHaversineKm(userLat, userLng, p.lat, p.lng);
+        if (d < minDist) {
+          minDist = d;
+          nearest = p;
+        }
+      });
+      if (nearest) {
+        mapCategory = 'all';
+        if (minDist > mapRadiusKm) {
+          mapRadiusKm = Math.min(45, Math.ceil(minDist + 5));
+          document.getElementById('radiusSlider').value = mapRadiusKm;
+          document.getElementById('radiusValueLabel').textContent = `${mapRadiusKm} กม.`;
+        }
+        selectPlaceOnMap(nearest.id);
+        showToast(`🚨 พบ รพ.ฉุกเฉินใกล้ที่สุด: ${nearest.shortName} (${minDist.toFixed(1)} กม.)`);
+      }
+    }
+
+    function bookClinicAppointmentReminder(placeId) {
+      const p = mapPlaces.find(x => x.id === placeId);
+      const pet = getActivePet();
+      if (!p || !pet) return;
+      const today = getTodayDateString();
+      pet.reminders.unshift({
+        id: 'r-clinic-' + Date.now(),
+        title: `นัดตรวจสุขภาพที่ ${p.name} (โทร ${p.phone})`,
+        category: 'vaccine',
+        date: today,
+        time: '14:00:00',
+        done: false,
+        notified: false
+      });
+      saveState();
+      renderDashboard();
+      showToast(`📅 เพิ่มนัดหมายที่ "${p.shortName}" เข้าหน้าหลักแล้ว!`);
     }
 
     function toggleSatelliteLayer() {
@@ -2015,9 +2149,8 @@
       mapDisplayMode = mode;
       document.getElementById('leafletMapWrapper').classList.toggle('hidden', mode !== 'leaflet');
       document.getElementById('googleMapsEmbedWrapper').classList.toggle('hidden', mode !== 'gmap');
-      document.getElementById('vectorMapWrapper').classList.toggle('hidden', mode !== 'vector');
 
-      ['leaflet', 'gmap', 'vector'].forEach(m => {
+      ['leaflet', 'gmap'].forEach(m => {
         const b = document.getElementById('btnMapMode-' + m);
         if (b) {
           b.className = (m === mode)
@@ -2075,24 +2208,15 @@
       const z = gpsZones[zone] || gpsZones.all;
       userLat = z.lat;
       userLng = z.lng;
-      const marker = document.getElementById('userGpsMarker');
-      const radar = document.getElementById('svgRadarCircle');
-      if (marker) marker.setAttribute('transform', `translate(${z.cx}, ${z.cy})`);
-      if (radar) { radar.setAttribute('cx', z.cx); radar.setAttribute('cy', z.cy); }
-      const zTitle = document.getElementById('mapZoneTitle');
-      if (zTitle) zTitle.textContent = z.label;
       if (leafletMap) {
         leafletMap.setView([userLat, userLng], z.zoom || 12);
       }
-      resetVectorMap();
       renderMapAndPlaces();
     }
 
     function updateMapRadius(val) {
       mapRadiusKm = parseInt(val, 10) || 15;
       document.getElementById('radiusValueLabel').textContent = `${mapRadiusKm} กม.`;
-      const radar = document.getElementById('svgRadarCircle');
-      if (radar) radar.setAttribute('r', mapRadiusKm * 15);
       renderMapAndPlaces();
     }
 
@@ -2113,7 +2237,8 @@
       
       const places = mapPlaces.map(p => {
         const dist = calcHaversineKm(userLat, userLng, p.lat, p.lng);
-        return { ...p, calcDist: parseFloat(dist.toFixed(1)) };
+        const driveMin = estimateDriveMinutes(dist);
+        return { ...p, calcDist: parseFloat(dist.toFixed(1)), driveMin };
       }).filter(p => {
         return p.calcDist <= mapRadiusKm && 
                (mapCategory === 'all' || p.category === mapCategory) &&
@@ -2139,38 +2264,41 @@
           weight: 1.5,
           dashArray: '6, 6',
           fillColor: '#4F46E5',
-          fillOpacity: 0.06
+          fillOpacity: 0.05
         }).addTo(leafletMarkersLayer);
 
         places.forEach(p => {
           const isSel = p.id === selectedPlaceId;
           const bg = p.category === 'emergency' ? '#E11D48' : '#059669';
-          const ring = isSel ? 'box-shadow: 0 0 0 6px rgba(79,70,229,0.45), 0 6px 16px rgba(0,0,0,0.4); transform: scale(1.18);' : '';
+          const ring = isSel ? 'box-shadow: 0 0 0 6px rgba(79,70,229,0.5), 0 8px 20px rgba(0,0,0,0.45); transform: scale(1.18);' : '';
           const pinIcon = L.divIcon({
             className: '',
-            html: `<div class="custom-vet-marker" style="width:34px;height:34px;background:${bg};${ring}">
-                     <i class="fa-solid ${p.category === 'emergency' ? 'fa-truck-medical' : 'fa-hospital'}"></i>
+            html: `<div class="vet-pin-wrapper">
+                     <div class="custom-vet-marker" style="width:34px;height:34px;background:${bg};${ring}">
+                       <i class="fa-solid ${p.category === 'emergency' ? 'fa-truck-medical' : 'fa-hospital'}"></i>
+                     </div>
+                     <span class="vet-pin-label">${p.shortName || p.name.substring(0, 12)} (${p.calcDist} กม.)</span>
                    </div>`,
-            iconSize: [34, 34],
-            iconAnchor: [17, 17],
-            popupAnchor: [0, -18]
+            iconSize: [110, 54],
+            iconAnchor: [55, 22],
+            popupAnchor: [0, -20]
           });
 
           const m = L.marker([p.lat, p.lng], { icon: pinIcon }).addTo(leafletMarkersLayer);
           const navUrl = buildGoogleMapsNavUrl(p);
           m.bindPopup(`
-            <div style="min-width:210px;font-family:'Kanit',sans-serif;">
+            <div style="min-width:225px;font-family:'Kanit',sans-serif;">
               <div style="font-size:10px;font-weight:700;color:${bg};margin-bottom:2px;">
-                ${p.category === 'emergency' ? '🚨 เปิด 24 ชม. / ฉุกเฉิน' : '🏥 คลินิก / โรงพยาบาลสัตว์'} • ${p.calcDist} กม.
+                ${p.category === 'emergency' ? '🚨 เปิด 24 ชม. / ฉุกเฉิน' : '🏥 คลินิก / โรงพยาบาลสัตว์'} • ${p.calcDist} กม. (~${p.driveMin} นาที)
               </div>
               <div style="font-weight:700;font-size:13px;color:#0F172A;">${p.name}</div>
               <div style="font-size:11px;color:#475569;margin-top:3px;">${p.address}</div>
               <div style="font-size:11px;color:#334155;margin-top:2px;">🕒 ${p.hours}</div>
               <div style="display:flex;gap:6px;margin-top:8px;">
-                <a href="${navUrl}" target="_blank" rel="noopener noreferrer" style="flex:1;background:#4F46E5;color:#fff;text-decoration:none;text-align:center;padding:5px 8px;border-radius:8px;font-size:11px;font-weight:600;">
-                  นำทาง Google Maps
+                <a href="${navUrl}" target="_blank" rel="noopener noreferrer" style="flex:1;background:#4F46E5;color:#fff;text-decoration:none;text-align:center;padding:6px 8px;border-radius:8px;font-size:11px;font-weight:600;">
+                  🚗 นำทาง Google Maps
                 </a>
-                <a href="tel:${p.phone}" style="background:#F1F5F9;color:#0F172A;text-decoration:none;padding:5px 8px;border-radius:8px;font-size:11px;font-weight:600;">
+                <a href="tel:${p.phone}" style="background:#ECFDF5;color:#047857;text-decoration:none;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:600;">
                   📞 โทร
                 </a>
               </div>
@@ -2190,29 +2318,11 @@
         updateMapBannerAndRoute(places);
       }
 
-      // Update SVG Vector Map Pins & Route
-      const pinsLayer = document.getElementById('svgPinsLayer');
-      if (pinsLayer) {
-        pinsLayer.innerHTML = places.map(p => {
-          const isSel = p.id === selectedPlaceId;
-          const bg = p.category === 'emergency' ? '#F43F5E' : '#10B981';
-          return `
-            <g class="map-pin-group cursor-pointer" transform="translate(${p.svgX}, ${p.svgY})" onclick="selectPlaceOnMap('${p.id}')">
-              ${isSel ? `<circle cx="0" cy="0" r="28" fill="${bg}" opacity="0.3" stroke="#0F172A" stroke-width="2" stroke-dasharray="4,4"/>` : ''}
-              <circle cx="0" cy="0" r="16" fill="${bg}" stroke="#FFFFFF" stroke-width="3" />
-              <text x="0" y="5" text-anchor="middle" font-size="12">${p.category === 'emergency'?'🚨':'🏥'}</text>
-              <rect x="-52" y="-34" width="104" height="17" rx="5" fill="${isSel?'#0F172A':'#FFFFFF'}" stroke="#CBD5E1" stroke-width="1"/>
-              <text x="0" y="-22" text-anchor="middle" font-size="9" font-weight="bold" fill="${isSel?'#FFFFFF':'#0F172A'}">${p.name.substring(0,14)}..</text>
-            </g>
-          `;
-        }).join('');
-      }
-
       // Render Clinic List Cards
       const listEl = document.getElementById('placesListContainer');
       if (!listEl) return;
       if (!places.length) {
-        listEl.innerHTML = `<div class="modern-card p-6 text-center text-xs text-slate-500 col-span-full">ไม่พบสถานพยาบาลสัตว์ในรัศมี ${mapRadiusKm} กม. ลองขยายรัศมีค้นหาด้านบน</div>`;
+        listEl.innerHTML = `<div class="modern-card p-6 text-center text-xs text-slate-500">ไม่พบสถานพยาบาลสัตว์ในรัศมี ${mapRadiusKm} กม. ลองขยายรัศมีค้นหาด้านบน</div>`;
         return;
       }
 
@@ -2220,43 +2330,49 @@
         const isSel = p.id === selectedPlaceId;
         const navUrl = buildGoogleMapsNavUrl(p);
         return `
-          <div class="modern-card p-4 flex flex-col justify-between gap-3 ${isSel ? 'ring-2 ring-indigo-600 bg-indigo-50/20 dark:bg-indigo-950/20' : ''}">
+          <div class="modern-card p-4 flex flex-col justify-between gap-2.5 cursor-pointer ${isSel ? 'ring-2 ring-indigo-600 bg-indigo-50/30 dark:bg-indigo-950/30' : ''}" onclick="selectPlaceOnMap('${p.id}')">
             <div>
-              <div class="flex justify-between items-start gap-2 mb-1.5">
+              <div class="flex justify-between items-start gap-2 mb-1">
                 <div class="flex flex-wrap items-center gap-1.5">
                   <span class="badge ${p.category==='emergency'?'bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/50 dark:text-rose-300 dark:border-rose-800':'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-300 dark:border-emerald-800'} text-[10px]">
                     ${p.category==='emergency'?'🚨 ฉุกเฉิน / เปิดดึก':'🏥 คลินิก / รพ.สัตว์'}
                   </span>
                   <span class="text-[11px] font-medium text-amber-600 dark:text-amber-400">${p.rating}</span>
                 </div>
-                <span class="text-xs font-bold bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 px-2.5 py-0.5 rounded-lg border border-slate-200 dark:border-slate-700 shrink-0">
-                  ${p.calcDist} กม.
-                </span>
+                <div class="text-right shrink-0">
+                  <span class="text-xs font-bold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-lg border border-indigo-200/70 dark:border-indigo-800">
+                    ${p.calcDist} กม.
+                  </span>
+                  <span class="block text-[10px] text-slate-400 mt-0.5">~${p.driveMin} นาที</span>
+                </div>
               </div>
 
               <h4 class="font-bold text-sm text-slate-900 dark:text-white leading-snug">
-                <a href="${p.webUrl}" target="_blank" rel="noopener noreferrer" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition underline-offset-2 hover:underline">
+                <a href="${p.webUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition underline-offset-2 hover:underline">
                   ${p.name} <i class="fa-solid fa-arrow-up-right-from-square text-[10px] opacity-60"></i>
                 </a>
               </h4>
               <p class="text-xs text-slate-500 dark:text-slate-400 mt-1"><i class="fa-solid fa-location-dot text-rose-500 mr-1"></i>${p.address}</p>
-              <p class="text-[11px] text-slate-600 dark:text-slate-300 mt-1"><i class="fa-regular fa-clock text-indigo-500 mr-1"></i>${p.hours}</p>
+              <p class="text-[11px] text-slate-600 dark:text-slate-300 mt-0.5"><i class="fa-regular fa-clock text-indigo-500 mr-1"></i>${p.hours}</p>
             </div>
 
-            <div class="flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-slate-100 dark:border-slate-800">
+            <div class="flex flex-wrap items-center justify-between gap-1.5 pt-2.5 border-t border-slate-100 dark:border-slate-800" onclick="event.stopPropagation()">
               <div class="flex items-center gap-1.5">
-                <button onclick="selectPlaceOnMap('${p.id}')" class="btn-secondary px-2.5 py-1.5 text-xs">
-                  <i class="fa-solid fa-location-crosshairs text-indigo-600"></i> ดูบนแผนที่
+                <button onclick="selectPlaceOnMap('${p.id}')" class="btn-secondary px-2.5 py-1 text-[11px]">
+                  <i class="fa-solid fa-route text-indigo-600"></i> นำทาง
                 </button>
-                <button onclick="openPlaceInGoogleEmbed('${p.id}')" class="btn-secondary px-2.5 py-1.5 text-xs">
-                  <i class="fa-brands fa-google text-emerald-600"></i> Google Maps สด
+                <button onclick="openPlaceInGoogleEmbed('${p.id}')" class="btn-secondary px-2.5 py-1 text-[11px]">
+                  <i class="fa-brands fa-google text-emerald-600"></i> แผนที่สด
+                </button>
+                <button onclick="bookClinicAppointmentReminder('${p.id}')" class="btn-secondary px-2.5 py-1 text-[11px]" title="สร้างรายการนัดหมายคลินิกนี้">
+                  <i class="fa-regular fa-calendar-plus text-amber-600"></i> นัดหมาย
                 </button>
               </div>
               <div class="flex items-center gap-1.5">
-                <a href="${navUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary px-3 py-1.5 text-xs">
-                  <i class="fa-solid fa-diamond-turn-right"></i> นำทางจริง
+                <a href="${navUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary px-2.5 py-1 text-[11px]">
+                  <i class="fa-solid fa-diamond-turn-right"></i> Google Maps
                 </a>
-                <a href="tel:${p.phone}" class="btn-secondary px-2.5 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-300">
+                <a href="tel:${p.phone}" class="btn-secondary px-2.5 py-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-300">
                   <i class="fa-solid fa-phone"></i> ${p.phone}
                 </a>
               </div>
@@ -2267,12 +2383,10 @@
     }
 
     function updateMapBannerAndRoute(places) {
-      const z = gpsZones[currentGPSZone] || gpsZones.all;
       const selPlace = places.find(p => p.id === selectedPlaceId);
       const banner = document.getElementById('routeInfoText');
       const btnClear = document.getElementById('btnClearRoute');
       const btnNav = document.getElementById('btnDirectGoogleNav');
-      const routeLayer = document.getElementById('svgRouteLayer');
 
       if (leafletRouteLine && leafletMap) {
         leafletMap.removeLayer(leafletRouteLine);
@@ -2287,20 +2401,15 @@
             dashArray: '8, 8'
           }).addTo(leafletMap);
         }
-        if (routeLayer) {
-          routeLayer.innerHTML = `
-            <path d="M ${z.cx} ${z.cy} L ${selPlace.svgX} ${z.cy} L ${selPlace.svgX} ${selPlace.svgY}" fill="none" stroke="#0F172A" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
-            <path d="M ${z.cx} ${z.cy} L ${selPlace.svgX} ${z.cy} L ${selPlace.svgX} ${selPlace.svgY}" fill="none" stroke="#4F46E5" stroke-width="4" stroke-dasharray="8,8" class="animated-route" />
-          `;
+        if (banner) {
+          banner.innerHTML = `🚗 เส้นทางไป <strong class="text-indigo-300">${selPlace.shortName || selPlace.name}</strong> • ระยะทาง <strong>${selPlace.calcDist} กม.</strong> (~${selPlace.driveMin} นาที)`;
         }
-        if (banner) banner.innerHTML = `🚗 เลือกพิกัด: <strong class="text-indigo-300">${selPlace.name}</strong> (ห่าง ${selPlace.calcDist} กม.)`;
         if (btnClear) btnClear.classList.remove('hidden');
         if (btnNav) {
           btnNav.href = buildGoogleMapsNavUrl(selPlace);
           btnNav.classList.remove('hidden');
         }
       } else {
-        if (routeLayer) routeLayer.innerHTML = '';
         if (banner) banner.innerHTML = `🟢 พบสถานพยาบาลสัตว์ <strong>${places.length} แห่ง</strong> ในรัศมี ${mapRadiusKm} กม.`;
         if (btnClear) btnClear.classList.add('hidden');
         if (btnNav) btnNav.classList.add('hidden');
@@ -2333,43 +2442,12 @@
         }
       }
       renderMapAndPlaces();
-      document.getElementById('appViewport')?.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function clearSelectedPlaceRoute() {
       selectedPlaceId = null;
       renderMapAndPlaces();
     }
-
-    function applyMapTransform() {
-      const g = document.getElementById('mapPanZoomGroup');
-      if (g) g.setAttribute('transform', `translate(${mapPanX}, ${mapPanY}) scale(${mapScale})`);
-    }
-    function zoomVectorMap(d) {
-      mapScale = Math.max(0.5, Math.min(3, +(mapScale+d).toFixed(2)));
-      applyMapTransform();
-    }
-    function resetVectorMap() {
-      mapScale = 1; mapPanX = 0; mapPanY = 0;
-      applyMapTransform();
-    }
-    function startMapDrag(e) {
-      if (!e.target.closest('.map-pin-group')) {
-        isDraggingMap = true;
-        dragStartX = (e.clientX || e.touches?.[0]?.clientX || 0) - mapPanX;
-        dragStartY = (e.clientY || e.touches?.[0]?.clientY || 0) - mapPanY;
-      }
-    }
-    function moveMapDrag(e) {
-      if (isDraggingMap) {
-        mapPanX = (e.clientX || e.touches?.[0]?.clientX || 0) - dragStartX;
-        mapPanY = (e.clientY || e.touches?.[0]?.clientY || 0) - dragStartY;
-        applyMapTransform();
-      }
-    }
-    function endMapDrag() { isDraggingMap = false; }
-    function startMapTouch(e) { if (e.touches.length === 1) startMapDrag(e); }
-    function moveMapTouch(e) { if (e.touches.length === 1) moveMapDrag(e); }
 
     // =========================================================================
     // 5. MODALS, CRUD & REAL-TIME ALARM ENGINE
@@ -2718,8 +2796,8 @@
       const btn = document.getElementById('btnSoundStatus');
       if (btn) {
         btn.innerHTML = isSoundMuted
-          ? '<i class="fa-solid fa-volume-xmark text-rose-500"></i><span class="hidden sm:inline">ปิดเสียง</span>'
-          : '<i class="fa-solid fa-volume-high text-indigo-600 dark:text-indigo-400"></i><span class="hidden sm:inline">เปิดเสียง</span>';
+          ? '<i class="fa-solid fa-volume-xmark text-rose-400"></i><span class="hidden md:inline">ปิดเสียง</span>'
+          : '<i class="fa-solid fa-volume-high text-emerald-400"></i><span class="hidden md:inline">เปิดเสียง</span>';
       }
       showToast(isSoundMuted ? '🔇 ปิดเสียงแจ้งเตือนแล้ว' : '🔊 เปิดเสียงแจ้งเตือนแล้ว');
     }
